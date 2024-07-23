@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "title": "IPhone 13 Promax",
+      "title": "IPhone 13 Promaxx",
       "price": 12300000,
       "quantity": 11,
       "description": "sản phẩm tuyệt vời",
@@ -147,6 +147,18 @@
       "password": "$2a$10$vWGrZbiXvZizuDFueCqr5ufyBYKi6Zhn1MgjMbQHySAQE3fN6F/0G",
       "username": "admin",
       "id": 23
+    },
+    {
+      "email": "adminKien123@gmail.com",
+      "password": "$2a$10$CtsmXC.bpRvoaJOVL5wZrOoskV39bwiHpm4CI.DpnuNHWAd//rUsK",
+      "username": "admin",
+      "id": 24
+    },
+    {
+      "email": "aaaaaaaaaa@gmail.com",
+      "password": "$2a$10$yjaUCghXnRLxW1Qi.V0sPemIpAec/cNcEng0tvfSGHB1IXsQbIf5u",
+      "username": "admin123",
+      "id": 25
     }
   ]
 }

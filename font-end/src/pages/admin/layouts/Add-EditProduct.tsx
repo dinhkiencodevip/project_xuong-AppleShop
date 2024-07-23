@@ -12,26 +12,26 @@ const AddEditProduct = () => {
   const nav = useNavigate();
   const fetchProducts = async () => {
     const { data } = await instace.get(`/products`);
-    setProducts(data);
+    setProducts(data.data);
   };
   useEffect(() => {
     fetchProducts();
   }, []);
   const fetchCategory = async () => {
     const { data } = await instace.get(`/category`);
-    setCategory(data);
+    setCategory(data.data);
   };
   useEffect(() => {
     fetchCategory();
   }, []);
   const onSubmitProduct = async (data: Products | Category) => {
-    if (data.id) {
-      await instace.put(`/products/${data.id}`, data);
+    if (data._id) {
+      await instace.patch(`/products/${data._id}`, { ...data, _id: undefined });
       const newData = await instace.get("/products");
-      setProducts(newData.data);
+      setProducts(newData.data.data);
     } else {
       const res = await instace.post(`/products`, data);
-      setProducts([...products, res.data]);
+      setProducts([...products, res.data.data]);
     }
     if (confirm("Succesfull, redirect to admin page?")) {
       nav("/admin/product");

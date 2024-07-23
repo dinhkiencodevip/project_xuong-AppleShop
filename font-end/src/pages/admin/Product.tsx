@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Products } from "../../interface/product";
 interface Props {
   products: Products[];
-  onRemove: (id: number | string) => void;
+  onRemove: (id: any) => void;
 }
 
 const Product = ({ products, onRemove }: Props) => {
@@ -35,8 +35,8 @@ const Product = ({ products, onRemove }: Props) => {
           </thead>
           <tbody>
             {products.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
+              <tr key={item._id}>
+                <td>{item._id}</td>
                 <td>{item.category}</td>
                 <td>{item.title}</td>
                 <td>
@@ -57,14 +57,14 @@ const Product = ({ products, onRemove }: Props) => {
                 <td>{item.description}</td>
                 <td>
                   <Link
-                    to={`/admin/product-edit/${item.id}`}
+                    to={`/admin/product-edit/${item._id}`}
                     className="btn btn-warning mx-2"
                   >
                     Edit
                   </Link>
                   <button
                     className="btn btn-danger"
-                    onClick={() => onRemove(item.id)}
+                    onClick={() => onRemove(item._id)}
                   >
                     Remove
                   </button>

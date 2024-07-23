@@ -8,7 +8,7 @@ const Products = () => {
   //   const nav = useNavigate();
   const fetchProducts = async () => {
     const { data } = await instace.get(`/products`);
-    setProducts(data);
+    setProducts(data.data);
   };
   useEffect(() => {
     fetchProducts();
@@ -35,7 +35,7 @@ const Products = () => {
                             </div>
                             <div className="p-4 border border-secondary border-top-0 rounded-bottom">
                               <Link
-                                to={`/product/detail/${prd.id}`}
+                                to={`/product/detail/${prd._id}`}
                                 className="title"
                               >
                                 {prd.title}

@@ -11,7 +11,7 @@ type Props = {
 };
 
 const CategoryFrom = ({ onSubmit }: Props) => {
-  const { id } = useParams();
+  const { _id } = useParams();
   const {
     register,
     formState: { errors },
@@ -22,17 +22,17 @@ const CategoryFrom = ({ onSubmit }: Props) => {
   });
   useEffect(() => {
     const fetchData = async () => {
-      if (id) {
-        const { data } = await instace.get(`/category/${id}`);
-        reset(data);
+      if (_id) {
+        const { data } = await instace.get(`/category/${_id}`);
+        reset(data.data);
       }
     };
     fetchData();
-  }, [id, reset]);
+  }, [_id, reset]);
   return (
     <div className="edit-addProduct">
-      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, id }))}>
-        <h1>{id ? "Edit Category" : "Add Category"}</h1>
+      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, _id }))}>
+        <h1>{_id ? "Edit Category" : "Add Category"}</h1>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
             Name
@@ -48,7 +48,7 @@ const CategoryFrom = ({ onSubmit }: Props) => {
         </div>
         <div className="mb-3">
           <button className="btn btn-primary w-100">
-            {id ? "Edit Category" : "Add Category"}
+            {_id ? "Edit Category" : "Add Category"}
           </button>
         </div>
       </form>

@@ -8,15 +8,15 @@ const AdminCategory = () => {
   const [category, setCategory] = useState<Category[]>([]);
   const fetchCategory = async () => {
     const { data } = await instace.get(`/category`);
-    setCategory(data);
+    setCategory(data.data);
   };
   useEffect(() => {
     fetchCategory();
   }, []);
-  const handleRemove = async (id: any) => {
+  const handleRemove = async (_id: string) => {
     if (confirm("Bạn chắc chắn muốn xóa không?")) {
-      await instace.delete(`/category/${id}`);
-      setCategory(category.filter((item) => item.id !== id));
+      await instace.delete(`/category/${_id}`);
+      setCategory(category.filter((item) => item._id !== _id));
     }
   };
   return (

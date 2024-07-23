@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 const RegisterHome = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const fetchUsers = async () => {
-    const { data } = await instace.get(`/register`);
-    setUsers(data);
+    const { data } = await instace.get(`/auth/register`);
+    setUsers(data.data);
   };
   useEffect(() => {
     fetchUsers();
@@ -18,14 +18,16 @@ const RegisterHome = () => {
   const onSubmit = async (data: Users) => {
     console.log(data);
     try {
-      const res = await instace.post(`/register`, data);
-      setUsers([...users, res.data]);
+      const res = await instace.post(`/auth/register`, data);
+      setUsers([...users, res.data.data]);
       if (confirm("Đăng kí tài khoản thành công!")) {
         nav("/login");
       }
     } catch (error) {
       console.log(error);
-      alert(error.response.data || "Đăng kí thất bại! Email đã tồn tại");
+      alert(
+        "error.response?.data.message" || "Đăng kí thất bại! Email đã tồn tại"
+      );
     }
   };
   return (

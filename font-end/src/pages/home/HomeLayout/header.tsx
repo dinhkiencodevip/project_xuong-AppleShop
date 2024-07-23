@@ -1,13 +1,9 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext, AuthContextType } from "../../../ConText/AuthContext";
 
 const Header = () => {
-  const nav = useNavigate();
-  const username = JSON.parse(localStorage.getItem("user"))?.user?.username;
-  const logout = () => {
-    localStorage.removeItem("user");
-    nav("/login");
-  };
+  const { user, logout } = useContext(AuthContext) as AuthContextType;
   return (
     <>
       <div className="container-fluid fixed-top">
@@ -116,14 +112,16 @@ const Header = () => {
                     <i className="fas fa-user fa-2x" />
                   </a>
                   <div className="dropdown-menu">
-                    {username ? (
+                    {user ? (
                       <li>
                         <Link to="" className="dropdown-item">
-                          User : {username}
+                          User : {user?.email}
                         </Link>
-                        <Link to="/admin" className="dropdown-item">
-                          Admin
-                        </Link>
+                        {user.role == "admin" && (
+                          <Link to="/admin" className="dropdown-item">
+                            Admin
+                          </Link>
+                        )}
                         <button className="dropdown-item" onClick={logout}>
                           Logout
                         </button>

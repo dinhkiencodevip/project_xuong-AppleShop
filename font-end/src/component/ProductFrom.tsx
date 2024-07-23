@@ -26,15 +26,14 @@ const ProductFrom = ({ onSubmit, categorys }: Props) => {
     const fetchData = async () => {
       if (id) {
         const { data } = await instace.get(`/products/${id}`);
-        reset(data);
+        reset(data.data);
       }
     };
-
     fetchData();
   }, [id, reset]);
   return (
     <div className="edit-addProduct">
-      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, id }))}>
+      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, _id: id }))}>
         <h1>{id ? "Edit product" : "Add Product"}</h1>
         <div className="mb-3">
           <label htmlFor="category" className="form-label">

@@ -4,29 +4,33 @@ import { instace } from "../../api";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Login from "../admin/auth/Login";
+import { useAuth } from "../../ConText/AuthContext";
 
 const LoginHome = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const fetchUsers = async () => {
-    const { data } = await instace.get(`/login`);
-    setUsers(data);
+    const { data } = await instace.get(`/auth/login`);
+    setUsers(data.data);
   };
   useEffect(() => {
     fetchUsers();
   }, []);
+  const { login: contextLogin, isAdmin } = useAuth();
   const nav = useNavigate();
   const onSubmit = async (data: Users) => {
     console.log(data);
     try {
-      const res = await instace.post(`/login`, data);
-      localStorage.setItem("user", JSON.stringify(res.data));
-      setUsers([...users, res.data]);
-      if (confirm("Đăng nhập thành công! Quay lại trang chủ")) {
+      const res = await instace.post(`/auth/login`, data);
+      contextLogin(res.data.accessToken, res.data.user);
+      if (confirm("Đăng nhập thành công!")) {
         nav("/");
       }
     } catch (error) {
       console.log(error);
-      alert(error.response.data || "Đăng kí thất bại! Email đã tồn tại ");
+      alert(
+        error.response.data.message ||
+          "Đăng nhập thất bại ! Mật khẩu không đúng "
+      );
     }
   };
   return (

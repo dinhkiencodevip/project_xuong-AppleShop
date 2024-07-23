@@ -10,14 +10,14 @@ const AddEditCategory = () => {
   const nav = useNavigate();
   const fetchCategory = async () => {
     const { data } = await instace.get(`/category`);
-    setCategory(data);
+    setCategory(data.data);
   };
   useEffect(() => {
     fetchCategory();
   }, []);
   const onSubmitProduct = async (data: Category) => {
-    if (data.id) {
-      await instace.put(`/category/${data.id}`, data);
+    if (data._id) {
+      await instace.put(`/category/${data._id}`, data);
       const newData = await instace.get("/category");
       setCategory(newData.data);
     } else {

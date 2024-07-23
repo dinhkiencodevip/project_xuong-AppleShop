@@ -37,19 +37,6 @@ const RegisterFrom = ({ onSubmit }: Props) => {
         </div>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
-            User Name
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            {...register("username")}
-          ></input>
-          {errors.username && (
-            <span className="text-danger">{errors.username.message}</span>
-          )}
-        </div>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
             Password
           </label>
           <input
@@ -59,6 +46,19 @@ const RegisterFrom = ({ onSubmit }: Props) => {
           ></input>
           {errors.password && (
             <span className="text-danger">{errors.password.message}</span>
+          )}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="confrimpass" className="form-label">
+            ConfirmPassword
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            {...register("confirmPass")}
+          ></input>
+          {errors.confirmPass && (
+            <span className="text-danger">{errors.confirmPass.message}</span>
           )}
         </div>
         <div className="mb-3">

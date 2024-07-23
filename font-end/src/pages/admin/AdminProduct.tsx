@@ -10,16 +10,16 @@ const AdminProduct = () => {
   //   const nav = useNavigate();
   const fetchProducts = async () => {
     const { data } = await instace.get(`/products`);
-    setProducts(data);
+    setProducts(data.data);
   };
   useEffect(() => {
     fetchProducts();
   }, []);
   //Product
-  const handleRemove = async (id: number | string) => {
+  const handleRemove = async (_id: number | string) => {
     if (confirm("Bạn chắc chắn muốn xóa không")) {
-      await instace.delete(`/products/${id}`);
-      setProducts(products.filter((item) => item.id !== id));
+      await instace.delete(`/products/${_id}`);
+      setProducts(products.filter((item) => item._id !== _id));
     }
   };
   return (

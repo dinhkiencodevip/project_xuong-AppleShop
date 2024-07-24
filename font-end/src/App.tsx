@@ -9,7 +9,7 @@ import AddEditCategory from "./pages/admin/layouts/AddEditCategory";
 import RegisterHome from "./pages/home/RegisterHome";
 import HomeDetail from "./pages/home/HomeDetail";
 import LoginHome from "./pages/home/LoginHome";
-import PriveVateRoute from "./component/PriveVateRoute";
+
 function App() {
   return (
     <>

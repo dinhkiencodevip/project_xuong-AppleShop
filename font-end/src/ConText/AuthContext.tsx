@@ -25,6 +25,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const nav = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    console.log(token);
+
     if (token) {
       const user = JSON.parse(localStorage.getItem("user") || "");
       setUser(user);
@@ -32,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = (token: string, user: Users) => {
-    localStorage.setItem("accessToken", JSON.stringify(token));
+    localStorage.setItem("accessToken", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
     nav(user.role === "admin" ? "/admin" : "/");

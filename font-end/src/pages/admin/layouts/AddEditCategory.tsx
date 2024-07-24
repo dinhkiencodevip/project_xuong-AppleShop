@@ -19,10 +19,10 @@ const AddEditCategory = () => {
     if (data._id) {
       await instace.put(`/category/${data._id}`, data);
       const newData = await instace.get("/category");
-      setCategory(newData.data);
+      setCategory(newData.data.data);
     } else {
       const res = await instace.post(`/category`, data);
-      setCategory([...category, res.data]);
+      setCategory([...category, res.data.data]);
     }
     if (confirm("Succesfull, redirect to admin page?")) {
       nav("/admin/category");

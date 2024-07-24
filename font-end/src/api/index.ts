@@ -5,3 +5,11 @@ export const instace = axios.create({
   headers: { "Content-Type": "application/json" },
   timeout: 3000,
 });
+
+instace.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});

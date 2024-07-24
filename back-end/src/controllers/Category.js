@@ -13,6 +13,22 @@ export const getAllCategory = async (req, res) => {
   }
 };
 
+export const getCategoryById = async (req, res, next) => {
+  try {
+    const data = await Category.findById(req.params.id);
+    if (data) {
+      return res.status(200).json({
+        success: true,
+        data,
+        message: "Get category by Id successfull",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 export const createCategory = async (req, res) => {
   try {
     const data = await Category.create(req.body);

@@ -7,7 +7,11 @@ const productShema = new mongoose.Schema(
     quantity: { type: Number },
     images: { type: String },
     description: { type: String },
-    category: { type: String },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -9,6 +9,7 @@ import AddEditCategory from "./pages/admin/layouts/AddEditCategory";
 import RegisterHome from "./pages/home/RegisterHome";
 import HomeDetail from "./pages/home/HomeDetail";
 import LoginHome from "./pages/home/LoginHome";
+import NotFound from "./pages/admin/layouts/404NotFound";
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
         <Route path="/admin/category-edit/:id" element={<AddEditCategory />} />
         <Route path="/register" element={<RegisterHome />} />
         <Route path="/login" element={<LoginHome />} />
+
+        {/* Not Found */}
+        <Route path="/NotFound" element={<NotFound/>}></Route>
       </Routes>
     </>
   );

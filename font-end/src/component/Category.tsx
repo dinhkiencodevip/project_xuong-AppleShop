@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Category } from "../interface/category";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ const CategoryFrom = ({ onSubmit }: Props) => {
   }, [id, reset]);
   return (
     <div className="edit-addProduct">
-      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, _id : id }))}>
+      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, _id: id }))}>
         <h1>{id ? "Edit Category" : "Add Category"}</h1>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
@@ -46,6 +46,19 @@ const CategoryFrom = ({ onSubmit }: Props) => {
             <span className="text-danger">{errors.name.message}</span>
           )}
         </div>
+        {/* <div className="mb-3">
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            {...register("name")}
+          ></input>
+          {errors.name && (
+            <span className="text-danger">{errors.name.message}</span>
+          )}
+        </div> */}
         <div className="mb-3">
           <button className="btn btn-primary w-100">
             {id ? "Edit Category" : "Add Category"}

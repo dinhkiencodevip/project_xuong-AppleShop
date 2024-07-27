@@ -18,6 +18,7 @@ const AdminCategory = () => {
       await instace.delete(`/category/${_id}`);
       setCategory(category.filter((item) => item._id !== _id));
     }
+    alert(error.response?.data.message || "Đăng kí thất bại! Email đã tồn tại");
   };
   return (
     <div>

@@ -1,12 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../ConText/AuthContext";
 import AdminLayout from "./layouts/AdminLayout";
 // import Product from "./Product";
 
 const MainAdmin = () => {
   const { user } = useAuth();
+  const nav = useNavigate();
   console.log(user);
   if (!user || user.role !== "admin") {
-    return <h1>Bạn không có quyền vào trang admin</h1>;
+    nav("/NotFound");
   }
   return (
     <div>

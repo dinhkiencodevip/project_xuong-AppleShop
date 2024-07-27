@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Products } from "../interface/product";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -42,10 +42,12 @@ const ProductFrom = ({ onSubmit, categorys }: Props) => {
           <select
             id="category"
             className="form-control"
-            {...register("category")}
+            {...register("categoryId")}
           >
             {categorys.map((item) => (
-              <option key={id}>{item.name}</option>
+              <option key={item._id} value={item._id}>
+                {item.name}
+              </option>
             ))}
           </select>
         </div>

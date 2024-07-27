@@ -24,7 +24,7 @@ const Product = ({ products, onRemove }: Props) => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Brand</th>
+              <th>Category</th>
               <th>Title</th>
               <th>Image</th>
               <th>Quantity</th>
@@ -37,7 +37,7 @@ const Product = ({ products, onRemove }: Props) => {
             {products.map((item) => (
               <tr key={item._id}>
                 <td>{item._id}</td>
-                <td>{item.category}</td>
+                <td>{item.categoryId}</td>
                 <td>{item.title}</td>
                 <td>
                   {
@@ -66,7 +66,7 @@ const Product = ({ products, onRemove }: Props) => {
                     className="btn btn-danger"
                     onClick={() => onRemove(item._id)}
                   >
-                    Remove
+                    Delete
                   </button>
                 </td>
               </tr>

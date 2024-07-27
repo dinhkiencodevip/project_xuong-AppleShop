@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { instace } from "../../../api";
 import AdminLayout from "./AdminLayout";
@@ -17,15 +17,18 @@ const AddEditCategory = () => {
   }, []);
   const onSubmitProduct = async (data: Category) => {
     if (data._id) {
-      await instace.put(`/category/${data._id}`, data);
+      await instace.patch(`/category/${data._id}`, { ...data, _id: undefined });
       const newData = await instace.get("/category");
       setCategory(newData.data.data);
+      if (confirm("Sửa Category thành công! Quay lại trang admin?")) {
+        nav("/admin/category");
+      }
     } else {
       const res = await instace.post(`/category`, data);
       setCategory([...category, res.data.data]);
-    }
-    if (confirm("Succesfull, redirect to admin page?")) {
-      nav("/admin/category");
+      if (confirm("Thêm category thành công! Quay lại trang admin?")) {
+        nav("/admin/category");
+      }
     }
   };
   return (

@@ -21,7 +21,7 @@ export const productShema = Joi.object({
   images: Joi.string().messages({
     "String.base": "Images must be a string",
   }),
-  category: Joi.string().messages({
+  categoryId: Joi.string().messages({
     "String.base": "Category must be a string",
   }),
 });

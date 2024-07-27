@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export interface AuthContextType {
   user?: Users | null;
   login: (token: string, user: Users) => void;
-  logout: (token: string, user: Users) => void;
+  logout: () => void;
   isAdmin?: boolean;
 }
 
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     nav(user.role === "admin" ? "/admin" : "/");
   };
 
-  const logout = (token: string, user: Users) => {
+  const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
     setUser(user);

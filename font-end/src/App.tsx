@@ -29,7 +29,7 @@ function App() {
         <Route path="/login" element={<LoginHome />} />
 
         {/* Not Found */}
-        <Route path="/NotFound" element={<NotFound/>}></Route>
+        <Route path="/NotFound" element={<NotFound />}></Route>
       </Routes>
     </>
   );

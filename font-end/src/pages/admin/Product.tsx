@@ -1,12 +1,14 @@
-import React from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { Products } from "../../interface/product";
-interface Props {
-  products: Products[];
-  onRemove: (id: any) => void;
-}
+import {
+  ProductContext,
+  ProductContextType,
+} from "../../ConText/ProductContex";
 
-const Product = ({ products, onRemove }: Props) => {
+const Product = () => {
+  const { state, removeProduct } = useContext(
+    ProductContext
+  ) as ProductContextType;
   return (
     <div className="product">
       {/* Product */}
@@ -34,10 +36,10 @@ const Product = ({ products, onRemove }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {products.map((item) => (
+            {state.products.map((item) => (
               <tr key={item._id}>
                 <td>{item._id}</td>
-                <td>{item.categoryId}</td>
+                <td>{item.categoryId?.name}</td>
                 <td>{item.title}</td>
                 <td>
                   {
@@ -64,7 +66,7 @@ const Product = ({ products, onRemove }: Props) => {
                   </Link>
                   <button
                     className="btn btn-danger"
-                    onClick={() => onRemove(item._id)}
+                    onClick={() => removeProduct(item._id)}
                   >
                     Delete
                   </button>

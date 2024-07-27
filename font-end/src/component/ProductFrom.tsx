@@ -1,18 +1,16 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Products } from "../interface/product";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema } from "../validators/validatorsFrom";
-import { Category } from "../interface/category";
 import { instace } from "../api";
+import { ProductContext, ProductContextType } from "../ConText/ProductContex";
+import { Category } from "../interface/category";
 
-type Props = {
-  onSubmit: (data: Products | Category) => void;
-  categorys: Category[];
-};
-
-const ProductFrom = ({ onSubmit, categorys }: Props) => {
+const ProductFrom = () => {
+  const { handleProduct } = useContext(ProductContext) as ProductContextType;
+  const [categories, setCategories] = useState<Category[]>([]);
   const { id } = useParams();
   const {
     register,
@@ -31,20 +29,28 @@ const ProductFrom = ({ onSubmit, categorys }: Props) => {
     };
     fetchData();
   }, [id, reset]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await instace.get(`/category`);
+      setCategories(data.data);
+    })();
+  }, []);
   return (
     <div className="edit-addProduct">
-      <form onSubmit={handleSubmit((data) => onSubmit({ ...data, _id: id }))}>
+      <form
+        onSubmit={handleSubmit((data) => handleProduct({ ...data, _id: id }))}
+      >
         <h1>{id ? "Edit product" : "Add Product"}</h1>
         <div className="mb-3">
           <label htmlFor="category" className="form-label">
-            Brand
+            Category
           </label>
           <select
             id="category"
             className="form-control"
             {...register("categoryId")}
           >
-            {categorys.map((item) => (
+            {categories.map((item) => (
               <option key={item._id} value={item._id}>
                 {item.name}
               </option>
@@ -79,7 +85,7 @@ const ProductFrom = ({ onSubmit, categorys }: Props) => {
             Quantity
           </label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             {...register("quantity", { required: true, valueAsNumber: true })}
           />
@@ -92,7 +98,7 @@ const ProductFrom = ({ onSubmit, categorys }: Props) => {
             Price
           </label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             {...register("price", { required: true, valueAsNumber: true })}
           />

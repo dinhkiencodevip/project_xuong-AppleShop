@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
-      const user = JSON.parse(localStorage.getItem("user") || "");
+      const user = localStorage.getItem("user") || "";
       setUser(user);
     }
   }, []);
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("user");
-    setUser(user);
+    setUser(null);
     nav("/login");
   };
   return (

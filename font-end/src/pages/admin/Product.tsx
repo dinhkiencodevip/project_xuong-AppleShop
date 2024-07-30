@@ -14,7 +14,7 @@ const Product = () => {
       {/* Product */}
       <h2>Product</h2>
       <Link to="/admin/product-add" className="btn btn-primary">
-        Thêm sản phẩm
+        Add Product
       </Link>
       <br />
       <br />

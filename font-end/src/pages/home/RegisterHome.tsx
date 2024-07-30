@@ -16,7 +16,6 @@ const RegisterHome = () => {
   }, []);
   const nav = useNavigate();
   const onSubmit = async (data: Users) => {
-    console.log(data);
     try {
       const res = await instace.post(`/auth/register`, data);
       setUsers([...users, res.data.data]);

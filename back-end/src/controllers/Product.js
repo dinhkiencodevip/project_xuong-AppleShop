@@ -47,7 +47,7 @@ export const createProduct = async (req, res, next) => {
       return res.status(201).json({
         success: true,
         data,
-        message: "Create product successfull",
+        message: "Thêm sản phẩm thành công!",
       });
     }
   } catch (error) {
@@ -64,7 +64,7 @@ export const updateProductById = async (req, res, next) => {
       return res.status(201).json({
         success: true,
         data,
-        message: "Update product successfull",
+        message: "Update sản phẩm thành công",
       });
     }
   } catch (error) {
@@ -79,7 +79,7 @@ export const RemoveProduct = async (req, res, next) => {
       return res.status(201).json({
         success: true,
         data,
-        message: "Remove product successfull",
+        message: "Xóa sản phẩm thành công!",
       });
     }
   } catch (error) {

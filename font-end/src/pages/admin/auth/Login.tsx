@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Users } from "../../../interface/users";
 import { LoginSchema } from "../../../validators/validatorsFrom";
+import { Link } from "react-router-dom";
 
 interface Props {
   onSubmit: (data: Users) => void;
@@ -48,9 +49,12 @@ const Login = ({ onSubmit }: Props) => {
           )}
         </div>
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primary w-10">
             Login
           </button>
+          <Link to="/register" className="btn btn-primary-w50">
+            Register
+          </Link>
         </div>
       </form>
     </div>

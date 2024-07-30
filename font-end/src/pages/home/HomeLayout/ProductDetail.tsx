@@ -8,7 +8,7 @@ const ProductDetail = () => {
   const [p, setP] = useState<Products>({});
   const fetchProducts = async () => {
     const { data } = await instace.get(`products/${id}`);
-    setP(data);
+    setP(data.data);
   };
   useEffect(() => {
     fetchProducts();
@@ -36,7 +36,7 @@ const ProductDetail = () => {
                   <div className="border rounded">
                     <a href="#">
                       <img
-                        src={p.images}
+                        src={p?.images}
                         className="img-fluidrounded"
                         alt="Image"
                       />
@@ -44,9 +44,9 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="col-lg-6">
-                  <h4 className="fw-bold mb-3">{p.title}</h4>
-                  <p className="mb-3">Brand: {p.category}</p>
-                  <h5 className="fw-bold mb-3">{p.price} Đ</h5>
+                  <h4 className="fw-bold mb-3">{p?.title}</h4>
+                  <p className="mb-3">Brand: {p?.categoryId?.name}</p>
+                  <h5 className="fw-bold mb-3">{p?.price} Đ</h5>
                   <div className="d-flex mb-4">
                     <i className="fa fa-star text-secondary" />
                     <i className="fa fa-star text-secondary" />
@@ -54,7 +54,7 @@ const ProductDetail = () => {
                     <i className="fa fa-star text-secondary" />
                     <i className="fa fa-star" />
                   </div>
-                  <p className="mb-4">{p.description}</p>
+                  {/* <p className="mb-4">{p?.description}</p> */}
 
                   <div
                     className="input-group quantity mb-5"

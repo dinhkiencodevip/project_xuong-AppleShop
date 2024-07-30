@@ -6,7 +6,7 @@ export const productSchema = z.object({
   quantity: z.number().min(1, { message: "Số lượng phải >= 1" }),
   description: z.string().optional(),
   images: z.string(),
-  category: string(),
+  categoryId: string().optional(),
 });
 
 export const CategorySchema = z.object({
@@ -23,11 +23,10 @@ export const RegisterSchema = z
   })
   .refine((data) => data.password === data.confirmPass, {
     message: "Mật khẩu nhập lại không đúng",
+    path: ["confirmPass"],
   });
 
 export const LoginSchema = z.object({
   email: z.string().email({ message: "Đây không phải email" }),
-  password: z
-    .string()
-    .min(6, { message: "Password yếu! Vui lòng tăng độ cường" }),
+  password: z.string(),
 });

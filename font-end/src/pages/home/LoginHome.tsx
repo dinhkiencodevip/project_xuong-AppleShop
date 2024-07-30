@@ -18,7 +18,6 @@ const LoginHome = () => {
   const { login: contextLogin, isAdmin } = useAuth();
   const nav = useNavigate();
   const onSubmit = async (data: Users) => {
-    console.log(data);
     try {
       const res = await instace.post(`/auth/login`, data);
       contextLogin(res.data.accessToken, res.data.user);

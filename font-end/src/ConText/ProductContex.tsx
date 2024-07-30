@@ -35,10 +35,10 @@ const ProductProvider = ({ children }: { children: React.ReactNode }) => {
   const handleProduct = async (product: Products) => {
     try {
       if (product._id) {
-        const { data } = await instace.patch(
-          `/products/${product._id}`,
-          product
-        );
+        const { data } = await instace.patch(`/products/${product._id}`, {
+          ...product,
+          _id: undefined,
+        });
         dispatch({ type: "UPDATE_PRODUCT", payload: data.data });
         alert(data.message);
       } else {
@@ -47,7 +47,7 @@ const ProductProvider = ({ children }: { children: React.ReactNode }) => {
         dispatch({ type: "ADD_PRODUCT", payload: data.data });
         alert(data.message);
       }
-      nav("/admin/products");
+      window.location.href = "/admin/product";
     } catch (error) {
       console.log(error);
     }

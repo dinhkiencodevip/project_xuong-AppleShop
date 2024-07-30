@@ -42,8 +42,8 @@
   float: right;
 }
 .edit-addProduct {
-  width: 83%;
-  float: right;
+  width: 50%;
+  margin: 0 500px;
 }
 .Register {
   margin: 150px;
@@ -64,4 +64,8 @@
 }
 .form-control1 {
   margin: 0 200px;
+}
+.Register {
+  width: 500px;
+  margin: 200px 500px;
 }

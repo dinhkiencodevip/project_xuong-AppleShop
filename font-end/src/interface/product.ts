@@ -1,7 +1,7 @@
 import { Category } from "./category";
 
 export interface Products {
-  _id?: string;
+  _id?: string | undefined;
   title: string;
   price: number;
   quantity: number;

@@ -81,19 +81,6 @@ const ProductFrom = () => {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="quantity" className="form-label">
-            Quantity
-          </label>
-          <input
-            type="number"
-            className="form-control"
-            {...register("quantity", { required: true, valueAsNumber: true })}
-          />
-          {errors.quantity && (
-            <span className="text-danger">{errors.quantity.message}</span>
-          )}
-        </div>
-        <div className="mb-3">
           <label htmlFor="price" className="form-label">
             Price
           </label>

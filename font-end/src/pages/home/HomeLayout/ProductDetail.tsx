@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { instace } from "../../../api";
 import { Products } from "../../../interface/product";
+import { CartContext } from "../../../ConText/CartContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const [p, setP] = useState<Products>({});
+  const [p, setP] = useState<Products>({} as Products);
   const fetchProducts = async () => {
     const { data } = await instace.get(`products/${id}`);
     setP(data.data);
   };
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [id]);
+  const { addToCart } = useContext(CartContext);
+  const handleAddToCart = () => {
+    addToCart(p, 1);
+    alert("Thêm sản phẩm vào giỏ hàng thành công");
+  };
   return (
     <div>
       <div className="container-fluid page-header py-5">
@@ -76,13 +82,13 @@ const ProductDetail = () => {
                       </button>
                     </div>
                   </div>
-                  <a
-                    href="#"
+                  <button
+                    onClick={handleAddToCart}
                     className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
                   >
                     <i className="fa fa-shopping-bag me-2 text-primary" /> Add
                     to cart
-                  </a>
+                  </button>
                 </div>
                 <div className="col-lg-12">
                   <nav>
@@ -329,7 +335,7 @@ const ProductDetail = () => {
                         <div className="d-flex justify-content-between fruite-name">
                           <a href="#">
                             <i className="fas fa-apple-alt me-2" />
-                            {p.category}
+                            {p.categoryId?.name}
                           </a>
                           <span>(3)</span>
                         </div>

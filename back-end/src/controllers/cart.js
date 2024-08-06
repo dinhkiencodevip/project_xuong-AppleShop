@@ -2,7 +2,7 @@ import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 export const getCart = async (req, res, next) => {
   try {
-    const userId = res.userId;
+    const userId = req.user._id;
     const cart = await Cart.findOne({ userId }).populate("products.product");
     return res.json({
       message: "Get cart successfully",
@@ -17,32 +17,57 @@ export const addToCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { productId, quantity } = req.body;
-    const product = await Product.findById(productId);
-    if (!product)
-      return res.status(404).json({
-        message: "Product not found",
-      });
-    //Neu nguoi dung chua co cart thi tao cart, neu co roi thi them vao cart
 
+    // Kiểm tra dữ liệu đầu vào
+    if (!productId || quantity <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Invalid product ID or quantity" });
+    }
+
+    // Tìm sản phẩm
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Kiểm tra giá sản phẩm
+    if (product.price === null || product.price === undefined) {
+      return res.status(500).json({ message: "Product price is missing" });
+    }
+
+    // Tìm giỏ hàng của người dùng
     let cart = await Cart.findOne({ userId });
-    if (!cart) cart = new Cart({ userId, products: [], totalPrice: 0 });
+    if (!cart) {
+      cart = new Cart({ userId, products: [], totalPrice: 0 });
+    }
+
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
     const productIndex = cart.products.findIndex(
       (item) => item.product.toString() === productId
     );
+
     if (productIndex === -1) {
-      // Neu san pham chua co trong cart.products thi push san pham vao cart kem theo quantity
+      // Thêm sản phẩm mới vào giỏ hàng
       cart.products.push({ product: productId, quantity });
     } else {
-      cart.products[existingProductIndex].quantity += quantity;
-      //Neu san pham da co trong cart roi ma an mua them thi cap nhat lai quantity
+      // Cập nhật số lượng sản phẩm nếu đã tồn tại
+      cart.products[productIndex].quantity += quantity;
     }
+
+    // Cập nhật tổng giá
     cart.totalPrice += product.price * quantity;
+
+    // Lưu giỏ hàng
     await cart.save();
+
+    // Phản hồi thành công
     return res.status(200).json({
-      message: "Them san pham vao gio hang thanh cong!",
+      message: "Thêm sản phẩm vào giỏ hàng thành công!",
       cart,
     });
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };

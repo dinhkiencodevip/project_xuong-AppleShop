@@ -29,7 +29,6 @@ const Product = () => {
               <th>Category</th>
               <th>Title</th>
               <th>Image</th>
-              <th>Quantity</th>
               <th>Price</th>
               <th>Description</th>
               <th>Action</th>
@@ -54,7 +53,6 @@ const Product = () => {
                     />
                   }
                 </td>
-                <td>{item.quantity}</td>
                 <td>{item.price}</td>
                 <td>{item.description}</td>
                 <td>

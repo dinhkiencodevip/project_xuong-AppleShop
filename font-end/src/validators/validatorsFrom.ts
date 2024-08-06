@@ -3,7 +3,6 @@ import { string, z } from "zod";
 export const productSchema = z.object({
   title: z.string().min(6, { message: "Tối thiểu 6 kí tự" }),
   price: z.number().min(0, { message: "Không được nhỏ hơn 0" }),
-  quantity: z.number().min(1, { message: "Số lượng phải >= 1" }),
   description: z.string().optional(),
   images: z.string(),
   categoryId: string().optional(),

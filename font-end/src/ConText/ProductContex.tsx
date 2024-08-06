@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useReducer } from "react";
 import { Products } from "../interface/product";
 import productReducer from "../Reducers/ProductReducer";
-import { useNavigate } from "react-router-dom";
 import { instace } from "../api";
 
 export type ProductContextType = {
@@ -15,7 +14,6 @@ export const ProductContext = createContext({} as ProductContextType);
 
 const ProductProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(productReducer, { products: [] });
-  const nav = useNavigate();
   useEffect(() => {
     (async () => {
       const { data } = await instace.get(`/products`);

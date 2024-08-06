@@ -55,7 +55,7 @@ const CartLayout = () => {
                       </div>
                     </td>
                     <td>
-                      <p className="mb-0 mt-4">{prd.product.title}aaaaaaa</p>
+                      <p className="mb-0 mt-4">{prd.product.title}</p>
                     </td>
                     <td>
                       <p className="mb-0 mt-4">{prd.product.price}</p>

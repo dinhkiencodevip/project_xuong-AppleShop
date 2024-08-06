@@ -1,5 +1,6 @@
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
+import Oders from "../models/Oders.js";
 export const getCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -74,40 +75,53 @@ export const addToCart = async (req, res, next) => {
 
 export const removeFormCart = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    const userId = req.user._id;
     const { productId } = req.body;
+
+    // Tìm giỏ hàng của người dùng
     let cart = await Cart.findOne({ userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    // Kiểm tra sản phẩm có trong giỏ hàng không
     const findIndex = cart.products.findIndex(
       (p) => p.product.toString() === productId
     );
+
     if (findIndex === -1)
       return res.status(404).json({ message: "Product not found in cart" });
+
+    // Lấy sản phẩm cần xóa
     const product = cart.products[findIndex];
+
+    // Cập nhật tổng giá của giỏ hàng
     cart.totalPrice -= product.quantity * product.product.price;
-    cart.products = cart.products.filter(
-      (p) => p.product.toString() !== productId
-    );
+
+    // Xóa sản phẩm khỏi giỏ hàng
+    cart.products.splice(findIndex, 1);
+
+    // Lưu giỏ hàng đã cập nhật
     await cart.save();
+
     return res.status(200).json({
       message: "Remove product from cart successfully",
       cart,
     });
   } catch (error) {
+    console.error("Error removing product from cart:", error);
     next(error);
   }
 };
 
 export const checkOut = async (req, res, next) => {
   try {
-    const userId = req.userId;
+    const userId = req.user._id;
     const cart = await Cart.findOne({ userId }).populate("products.product");
     if (!cart)
       return res.status(400).json({
         message: "Cart is empty",
       });
     // pttt
-    const order = new Order({
+    const order = new Oders({
       user: userId,
       products: cart.products,
       totalPrice: cart.totalPrice,

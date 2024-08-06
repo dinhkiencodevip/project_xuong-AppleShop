@@ -1,19 +1,23 @@
 import mongoose, { Schema } from "mongoose";
 
-const oderItem = new Schema({
+const orderItemSchema = new Schema({
   product: { type: Schema.Types.ObjectId, ref: "Product" },
-  quantity: Number,
+  quantity: { type: Number, required: true },
 });
 
-const oderSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User" },
-  products: [oderItem],
-  totalPrice: Number,
-  vouchour: { type: String, enum: ["sale15", "sale20"] },
-  status: {
-    type: String,
-    enum: ["pending", "shipping", "completed", "cancelled"],
-    default: "pending",
+const orderSchema = new Schema(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    products: [orderItemSchema],
+    totalPrice: { type: Number, required: true },
+    voucher: { type: String, enum: ["sale15", "sale20"], default: null },
+    status: {
+      type: String,
+      enum: ["pending", "shipping", "completed", "cancelled"],
+      default: "pending",
+    },
   },
-});
-export default mongoose.model("Oder", oderSchema);
+  { timestamps: true }
+);
+
+export default mongoose.model("Order", orderSchema);

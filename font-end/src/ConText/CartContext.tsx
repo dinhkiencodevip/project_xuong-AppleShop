@@ -36,7 +36,7 @@ type CartAction =
   | { type: "ADD_TO_CART"; payload: { product: Products; quantity: number } }
   | { type: "REMOVE_FROM_CART"; payload: { productId: string } }
   | { type: "GET_CART"; payload: { products: CartItem[]; totalPrice: number } }
-  | { type: "CHECKOUT" };
+  | { type: "CHECKOUT"; payload: { products: CartItem[]; totalPrice: number } };
 
 // Định nghĩa hàm reducer
 const cartReducer = (state: State, action: CartAction): State => {
@@ -103,7 +103,6 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   const getCart = useCallback(async () => {
     try {
       const res = await instace.get("/cart");
-      console.log("Cart data from API:", res.data); // Kiểm tra dữ liệu nhận được
       dispatch({
         type: "GET_CART",
         payload: res.data,
@@ -113,25 +112,16 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const checkout = useCallback(async () => {
-    try {
-      await instace.post("/cart/checkout");
-      dispatch({ type: "CHECKOUT" });
-    } catch (error) {
-      console.error("Thanh toán thất bại:", error);
-    }
-  }, []);
+  const checkout = async () => {
+    const res = await instace.post("/cart/checkout");
+    dispatch({ type: "CHECKOUT", payload: res.data });
+  };
 
-  const removeFromCart = useCallback(async (productId: string) => {
-    try {
-      const res = await instace.delete(`/cart/${productId}`);
-      if (res.data.success) {
-        dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
-      }
-    } catch (error) {
-      console.error("Xóa khỏi giỏ hàng thất bại:", error);
-    }
-  }, []);
+  const removeFromCart = async (productId: string) => {
+    const res = await instace.delete(`/cart/${productId}`);
+    res.data.success &&
+      dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
+  };
 
   return (
     <CartContext.Provider

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useReducer, useCallback } from "react";
+import { createContext, useReducer, useCallback } from "react";
 import { Products } from "../interface/product";
 import { instace } from "../api";
 
@@ -8,7 +8,7 @@ export type CartContextType = {
     products: { product: Products; quantity: number }[];
     totalPrice: number;
   };
-  dispatch: React.Dispatch<any>;
+  dispatch: React.Dispatch<CartAction>;
   addToCart: (product: Products, quantity: number) => void;
   getCart: () => void;
   checkout: () => void;
@@ -36,10 +36,10 @@ type CartAction =
   | { type: "ADD_TO_CART"; payload: { product: Products; quantity: number } }
   | { type: "REMOVE_FROM_CART"; payload: { productId: string } }
   | { type: "GET_CART"; payload: { products: CartItem[]; totalPrice: number } }
-  | { type: "CHECKOUT"; payload: { products: CartItem[]; totalPrice: number } };
+  | { type: "CHECKOUT"; payload: {} }; // Không cần payload cho CHECKOUT
 
 // Định nghĩa hàm reducer
-const cartReducer = (state: State, action: CartAction): State => {
+const cartReducer = (state: State, action: CartAction) => {
   switch (action.type) {
     case "ADD_TO_CART":
       return {
@@ -62,6 +62,7 @@ const cartReducer = (state: State, action: CartAction): State => {
       };
 
     case "GET_CART":
+      console.log("Reducer GET_CART payload:", action.payload.totalPrice);
       return {
         ...state,
         products: action.payload.products || [],
@@ -82,7 +83,7 @@ const cartReducer = (state: State, action: CartAction): State => {
 const CartContext = createContext({} as CartContextType);
 
 // Định nghĩa component CartProvider
-const CartProvider = ({ children }: { children: ReactNode }) => {
+const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
   const addToCart = useCallback(async (product: Products, quantity: number) => {
@@ -103,9 +104,14 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   const getCart = useCallback(async () => {
     try {
       const res = await instace.get("/cart");
+      const { products, totalPrice } = res.data;
+
       dispatch({
         type: "GET_CART",
-        payload: res.data,
+        payload: {
+          products: products || [],
+          totalPrice: totalPrice || 0,
+        },
       });
     } catch (error) {
       console.error("Lấy giỏ hàng thất bại:", error);
@@ -113,14 +119,24 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const checkout = async () => {
-    const res = await instace.post("/cart/checkout");
-    dispatch({ type: "CHECKOUT", payload: res.data });
+    try {
+      await instace.post("/cart/checkout");
+      dispatch({ type: "CHECKOUT", payload: {} });
+    } catch (error) {
+      console.error("Thanh toán thất bại:", error);
+    }
   };
 
   const removeFromCart = async (productId: string) => {
-    const res = await instace.delete(`/cart/${productId}`);
-    res.data.success &&
-      dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
+    try {
+      const res = await instace.delete(`/cart/remove-cart/${productId}`);
+      // console.log("Remove from cart : ", res.data);
+
+      res.data.success &&
+        dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
+    } catch (error) {
+      console.error("Xóa sản phẩm thất bại:", error);
+    }
   };
 
   return (

@@ -73,10 +73,10 @@ export const addToCart = async (req, res, next) => {
   }
 };
 
-export const removeFormCart = async (req, res, next) => {
+export const removeFromCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.body;
+    const { productId } = req.params.productId;
 
     // Tìm giỏ hàng của người dùng
     let cart = await Cart.findOne({ userId });

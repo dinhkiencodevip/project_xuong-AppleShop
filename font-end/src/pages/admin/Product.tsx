@@ -9,6 +9,7 @@ const Product = () => {
   const { state, removeProduct } = useContext(
     ProductContext
   ) as ProductContextType;
+
   return (
     <div className="product">
       {/* Product */}

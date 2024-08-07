@@ -3,7 +3,7 @@ import {
   addToCart,
   checkOut,
   getCart,
-  removeFormCart,
+  removeFromCart,
 } from "../controllers/cart.js";
 
 const cartRouter = Router();
@@ -11,6 +11,6 @@ const cartRouter = Router();
 cartRouter.post("/", addToCart);
 cartRouter.get("/", getCart);
 cartRouter.post("/checkout", checkOut);
-cartRouter.delete("/remove-cart/:productId", removeFormCart);
+cartRouter.delete("/remove-cart/:productId", removeFromCart);
 
 export default cartRouter;

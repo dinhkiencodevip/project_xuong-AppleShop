@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { instace } from "../../../api";
 import { Products } from "../../../interface/product";
-import { CartContext } from "../../../ConText/CartContext";
+import { CartContext, CartContextType } from "../../../ConText/CartContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -14,7 +14,7 @@ const ProductDetail = () => {
   useEffect(() => {
     fetchProducts();
   }, [id]);
-  const { addToCart } = useContext(CartContext);
+  const { addToCart } = useContext(CartContext) as CartContextType;
   const handleAddToCart = () => {
     addToCart(p, 1);
     alert("Thêm sản phẩm vào giỏ hàng thành công");

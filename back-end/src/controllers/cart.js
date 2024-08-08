@@ -76,15 +76,15 @@ export const addToCart = async (req, res, next) => {
 export const removeFromCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.params.productId;
+    const { productId } = req.params; // Sửa lỗi ở đây
 
     // Tìm giỏ hàng của người dùng
-    let cart = await Cart.findOne({ userId });
+    let cart = await Cart.findOne({ userId }).populate("products.product");
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
     // Kiểm tra sản phẩm có trong giỏ hàng không
     const findIndex = cart.products.findIndex(
-      (p) => p.product.toString() === productId
+      (p) => p.product._id.toString() === productId
     );
 
     if (findIndex === -1)
@@ -93,8 +93,14 @@ export const removeFromCart = async (req, res, next) => {
     // Lấy sản phẩm cần xóa
     const product = cart.products[findIndex];
 
+    // Kiểm tra giá sản phẩm hợp lệ
+    const productPrice = product.product.price;
+    if (isNaN(productPrice)) {
+      return res.status(500).json({ message: "Product price is invalid" });
+    }
+
     // Cập nhật tổng giá của giỏ hàng
-    cart.totalPrice -= product.quantity * product.product.price;
+    cart.totalPrice -= product.quantity * productPrice;
 
     // Xóa sản phẩm khỏi giỏ hàng
     cart.products.splice(findIndex, 1);
@@ -118,9 +124,9 @@ export const checkOut = async (req, res, next) => {
     const cart = await Cart.findOne({ userId }).populate("products.product");
     if (!cart)
       return res.status(400).json({
-        message: "Cart is empty",
+        message: "Giỏ hàng trống",
       });
-    // pttt
+    // Tạo đơn hàng mới
     const order = new Oders({
       user: userId,
       products: cart.products,
@@ -131,7 +137,9 @@ export const checkOut = async (req, res, next) => {
     //Xoa gio hang sau khi thanh toan
     cart.products = [];
     cart.totalPrice = 0;
-    await res.status(200).json({ message: "Checkout susccessfully" });
+    await cart.save();
+
+    return res.status(200).json({ message: "Thanh toán thành công!" });
   } catch (error) {
     next(error);
   }

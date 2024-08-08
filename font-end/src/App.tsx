@@ -11,6 +11,7 @@ import HomeDetail from "./pages/home/HomeDetail";
 import LoginHome from "./pages/home/LoginHome";
 import NotFound from "./pages/admin/layouts/404NotFound";
 import CartHome from "./pages/home/CartHome";
+import CheckoutHome from "./pages/home/CheckoutHome";
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
         <Route path="/register" element={<RegisterHome />} />
         <Route path="/login" element={<LoginHome />} />
         <Route path="/cart" element={<CartHome />}></Route>
-
+        <Route path="/checkout" element={<CheckoutHome />}></Route>
         {/* Not Found */}
         <Route path="/NotFound" element={<NotFound />}></Route>
       </Routes>

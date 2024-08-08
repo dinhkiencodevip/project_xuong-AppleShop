@@ -3,10 +3,14 @@ import { CartContext, CartContextType } from "../../../ConText/CartContext";
 import { CartItem } from "../../../ConText/CartContext";
 
 const CartLayout = () => {
-  const { state, removeFromCart, checkout, getCart } = useContext(
-    CartContext
-  ) as CartContextType;
-  console.log(state);
+  const {
+    state,
+    removeFromCart,
+    checkout,
+    getCart,
+    increaseQuantity,
+    decreaseQuantity,
+  } = useContext(CartContext) as CartContextType;
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -33,8 +37,6 @@ const CartLayout = () => {
           <li className="breadcrumb-item active text-white">Cart</li>
         </ol>
       </div>
-      {/* Single Page Header End */}
-      {/* Cart Page Start */}
       <div className="container-fluid py-5">
         <div className="container py-5">
           <div className="table-responsive">
@@ -81,17 +83,24 @@ const CartLayout = () => {
                           style={{ width: 100 }}
                         >
                           <div className="input-group-btn">
-                            <button className="btn btn-sm btn-minus rounded-circle bg-light border">
+                            <button
+                              className="btn btn-sm btn-minus rounded-circle bg-light border"
+                              onClick={() => decreaseQuantity(prd.product._id)}
+                            >
                               <i className="fa fa-minus" />
                             </button>
                           </div>
                           <input
                             type="text"
                             className="form-control form-control-sm text-center border-0"
-                            defaultValue={prd.quantity}
+                            value={prd.quantity}
+                            readOnly
                           />
                           <div className="input-group-btn">
-                            <button className="btn btn-sm btn-plus rounded-circle bg-light border">
+                            <button
+                              className="btn btn-sm btn-plus rounded-circle bg-light border"
+                              onClick={() => increaseQuantity(prd.product._id)}
+                            >
                               <i className="fa fa-plus" />
                             </button>
                           </div>
@@ -139,21 +148,10 @@ const CartLayout = () => {
                   <h1 className="display-6 mb-4">
                     Cart <span className="fw-normal">Total</span>
                   </h1>
-                  <div className="d-flex justify-content-between mb-4">
-                    <h5 className="mb-0 me-4">Subtotal:</h5>
-                    <p className="mb-0">${state.totalPrice}</p>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <h5 className="mb-0 me-4">Shipping</h5>
-                    <div className="">
-                      <p className="mb-0">Flat rate: $3.00</p>
-                    </div>
-                  </div>
-                  <p className="mb-0 text-end">Shipping to Ukraine.</p>
                 </div>
                 <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                   <h5 className="mb-0 ps-4 me-4">Total</h5>
-                  <p className="mb-0 pe-4">${state.totalPrice + 3}</p>{" "}
+                  <p className="mb-0 pe-4">${state.totalPrice}</p>{" "}
                   {/* Thêm phí vận chuyển vào tổng giá */}
                 </div>
                 <button

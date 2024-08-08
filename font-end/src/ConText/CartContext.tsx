@@ -1,6 +1,7 @@
 import { createContext, useReducer, useCallback } from "react";
 import { Products } from "../interface/product";
 import { instace } from "../api";
+import { string } from "zod";
 
 // Định nghĩa loại CartContext
 export type CartContextType = {
@@ -13,6 +14,8 @@ export type CartContextType = {
   getCart: () => void;
   checkout: () => void;
   removeFromCart: (productId: string) => void;
+  increaseQuantity: (productId: string) => void;
+  decreaseQuantity: (productId: string) => void;
 };
 
 const initialState: State = {
@@ -36,7 +39,9 @@ type CartAction =
   | { type: "ADD_TO_CART"; payload: { product: Products; quantity: number } }
   | { type: "REMOVE_FROM_CART"; payload: { productId: string } }
   | { type: "GET_CART"; payload: { products: CartItem[]; totalPrice: number } }
-  | { type: "CHECKOUT"; payload: {} }; // Không cần payload cho CHECKOUT
+  | { type: "CHECKOUT"; payload: {} } // Không cần payload cho CHECKOUT
+  | { type: "INCREASE_QUANTITY"; payload: { productId: string } }
+  | { type: "DECREASE_QUANTITY"; payload: { productId: string } };
 
 // Định nghĩa hàm reducer
 const cartReducer = (state: State, action: CartAction) => {
@@ -60,7 +65,39 @@ const cartReducer = (state: State, action: CartAction) => {
           (item) => item.product._id !== action.payload.productId
         ),
       };
+    case "INCREASE_QUANTITY": {
+      const updatedProducts = state.products.map((item) =>
+        item.product._id === action.payload.productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+      const newTotalPrice = updatedProducts.reduce(
+        (total, item) => total + item.product.price * item.quantity,
+        0
+      );
+      return {
+        ...state,
+        products: updatedProducts,
+        totalPrice: newTotalPrice,
+      };
+    }
 
+    case "DECREASE_QUANTITY": {
+      const updatedProducts = state.products.map((item) =>
+        item.product._id === action.payload.productId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+      const newTotalPrice = updatedProducts.reduce(
+        (total, item) => total + item.product.price * item.quantity,
+        0
+      );
+      return {
+        ...state,
+        products: updatedProducts,
+        totalPrice: newTotalPrice,
+      };
+    }
     case "GET_CART":
       console.log("Reducer GET_CART payload:", action.payload.totalPrice);
       return {
@@ -80,7 +117,7 @@ const cartReducer = (state: State, action: CartAction) => {
 };
 
 // Tạo CartContext
-const CartContext = createContext({} as CartContextType);
+const CartContext = createContext<CartContextType>({} as CartContextType);
 
 // Định nghĩa component CartProvider
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
@@ -104,13 +141,16 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const getCart = useCallback(async () => {
     try {
       const res = await instace.get("/cart");
-      const { products, totalPrice } = res.data;
+      const { cart } = res.data;
+
+      // Ensure payload is correct
+      console.log("Fetched cart data:", cart);
 
       dispatch({
         type: "GET_CART",
         payload: {
-          products: products || [],
-          totalPrice: totalPrice || 0,
+          products: cart.products || [],
+          totalPrice: cart.totalPrice || 0,
         },
       });
     } catch (error) {
@@ -118,30 +158,66 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const checkout = async () => {
+  const checkout = useCallback(async () => {
     try {
       await instace.post("/cart/checkout");
       dispatch({ type: "CHECKOUT", payload: {} });
     } catch (error) {
       console.error("Thanh toán thất bại:", error);
     }
-  };
+  }, []);
 
-  const removeFromCart = async (productId: string) => {
-    try {
-      const res = await instace.delete(`/cart/remove-cart/${productId}`);
-      // console.log("Remove from cart : ", res.data);
+  const removeFromCart = useCallback(
+    async (productId: string) => {
+      try {
+        const res = await instace.delete(`/cart/remove-cart/${productId}`);
+        if (res.status === 200) {
+          dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
+        }
+      } catch (error) {
+        console.error("Xóa sản phẩm thất bại:", error);
+      }
+    },
+    [dispatch]
+  );
+  const increaseQuantity = useCallback(
+    async (productId: string) => {
+      try {
+        dispatch({ type: "INCREASE_QUANTITY", payload: { productId } });
+        // Optionally, send the updated quantity to the backend
+        await instace.patch(`/cart/increase-quantity/${productId}`);
+      } catch (error) {
+        console.error("Tăng số lượng thất bại:", error);
+      }
+    },
+    [dispatch]
+  );
 
-      res.data.success &&
-        dispatch({ type: "REMOVE_FROM_CART", payload: { productId } });
-    } catch (error) {
-      console.error("Xóa sản phẩm thất bại:", error);
-    }
-  };
+  const decreaseQuantity = useCallback(
+    async (productId: string) => {
+      try {
+        dispatch({ type: "DECREASE_QUANTITY", payload: { productId } });
+        // Optionally, send the updated quantity to the backend
+        await instace.patch(`/cart/decrease-quantity/${productId}`);
+      } catch (error) {
+        console.error("Giảm số lượng thất bại:", error);
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <CartContext.Provider
-      value={{ state, dispatch, addToCart, getCart, checkout, removeFromCart }}
+      value={{
+        state,
+        dispatch,
+        addToCart,
+        getCart,
+        checkout,
+        removeFromCart,
+        increaseQuantity,
+        decreaseQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>

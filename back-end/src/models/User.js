@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema(
       default: "member",
       enum: ["member", "admin"],
     },
+    fullname: { type: String },
+    address: { type: String },
+    phoneNumber: { String },
   },
   {
     timestamps: true,

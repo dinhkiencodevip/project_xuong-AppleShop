@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { instace } from "../../../api";
 import { Products } from "../../../interface/product";
 import { CartContext, CartContextType } from "../../../ConText/CartContext";
-
+import "react-toastify/dist/ReactToastify.css";
 const ProductDetail = () => {
   const { id } = useParams();
   const [p, setP] = useState<Products>({} as Products);
@@ -17,7 +17,7 @@ const ProductDetail = () => {
   const { addToCart } = useContext(CartContext) as CartContextType;
   const handleAddToCart = () => {
     addToCart(p, 1);
-    alert("Thêm sản phẩm vào giỏ hàng thành công");
+    alert("Thêm sản phẩm vào giỏ hàng thành công!");
   };
   return (
     <div>
@@ -61,30 +61,9 @@ const ProductDetail = () => {
                     <i className="fa fa-star" />
                   </div>
                   {/* <p className="mb-4">{p?.description}</p> */}
-
-                  <div
-                    className="input-group quantity mb-5"
-                    style={{ width: 100 }}
-                  >
-                    <div className="input-group-btn">
-                      <button className="btn btn-sm btn-minus rounded-circle bg-light border">
-                        <i className="fa fa-minus" />
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      className="form-control form-control-sm text-center border-0"
-                      defaultValue={1}
-                    />
-                    <div className="input-group-btn">
-                      <button className="btn btn-sm btn-plus rounded-circle bg-light border">
-                        <i className="fa fa-plus" />
-                      </button>
-                    </div>
-                  </div>
                   <button
                     onClick={handleAddToCart}
-                    className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                    className="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary w-100"
                   >
                     <i className="fa fa-shopping-bag me-2 text-primary" /> Add
                     to cart
@@ -354,146 +333,6 @@ const ProductDetail = () => {
                         src="img/featur-1.jpg"
                         className="img-fluid rounded"
                         alt="Image"
-                      />
-                    </div>
-                    <div>
-                      <h6 className="mb-2">Big Banana</h6>
-                      <div className="d-flex mb-2">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
-                      </div>
-                      <div className="d-flex mb-2">
-                        <h5 className="fw-bold me-2">2.99 $</h5>
-                        <h5 className="text-danger text-decoration-line-through">
-                          4.11 $
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-start">
-                    <div
-                      className="rounded"
-                      style={{ width: 100, height: 100 }}
-                    >
-                      <img
-                        src="img/featur-2.jpg"
-                        className="img-fluid rounded"
-                        alt=""
-                      />
-                    </div>
-                    <div>
-                      <h6 className="mb-2">Big Banana</h6>
-                      <div className="d-flex mb-2">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
-                      </div>
-                      <div className="d-flex mb-2">
-                        <h5 className="fw-bold me-2">2.99 $</h5>
-                        <h5 className="text-danger text-decoration-line-through">
-                          4.11 $
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-start">
-                    <div
-                      className="rounded"
-                      style={{ width: 100, height: 100 }}
-                    >
-                      <img
-                        src="img/featur-3.jpg"
-                        className="img-fluid rounded"
-                        alt=""
-                      />
-                    </div>
-                    <div>
-                      <h6 className="mb-2">Big Banana</h6>
-                      <div className="d-flex mb-2">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
-                      </div>
-                      <div className="d-flex mb-2">
-                        <h5 className="fw-bold me-2">2.99 $</h5>
-                        <h5 className="text-danger text-decoration-line-through">
-                          4.11 $
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-start">
-                    <div
-                      className="rounded me-4"
-                      style={{ width: 100, height: 100 }}
-                    >
-                      <img
-                        src="img/vegetable-item-4.jpg"
-                        className="img-fluid rounded"
-                        alt=""
-                      />
-                    </div>
-                    <div>
-                      <h6 className="mb-2">Big Banana</h6>
-                      <div className="d-flex mb-2">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
-                      </div>
-                      <div className="d-flex mb-2">
-                        <h5 className="fw-bold me-2">2.99 $</h5>
-                        <h5 className="text-danger text-decoration-line-through">
-                          4.11 $
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-start">
-                    <div
-                      className="rounded me-4"
-                      style={{ width: 100, height: 100 }}
-                    >
-                      <img
-                        src="img/vegetable-item-5.jpg"
-                        className="img-fluid rounded"
-                        alt=""
-                      />
-                    </div>
-                    <div>
-                      <h6 className="mb-2">Big Banana</h6>
-                      <div className="d-flex mb-2">
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star text-secondary" />
-                        <i className="fa fa-star" />
-                      </div>
-                      <div className="d-flex mb-2">
-                        <h5 className="fw-bold me-2">2.99 $</h5>
-                        <h5 className="text-danger text-decoration-line-through">
-                          4.11 $
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-start">
-                    <div
-                      className="rounded me-4"
-                      style={{ width: 100, height: 100 }}
-                    >
-                      <img
-                        src="img/vegetable-item-6.jpg"
-                        className="img-fluid rounded"
-                        alt=""
                       />
                     </div>
                     <div>

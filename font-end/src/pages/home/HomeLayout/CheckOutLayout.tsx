@@ -1,6 +1,73 @@
-import React from "react";
+import { useContext, useEffect, useState } from "react";
+import {
+  CartContext,
+  CartContextType,
+  CartItem,
+} from "../../../ConText/CartContext";
+import { AuthContext, AuthContextType } from "../../../ConText/AuthContext";
+import { QRCodeSVG } from "qrcode.react";
 
 const CheckOutLayout = () => {
+  const { state, getCart, checkout } = useContext(
+    CartContext
+  ) as CartContextType;
+
+  const { user } = useContext(AuthContext) as AuthContextType;
+  const [userInfo, setUserInfo] = useState({
+    fullname: "",
+    address: "",
+    phoneNumber: "",
+    email: "",
+  });
+
+  //tích hơp qrcode
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [qrCodeVisible, setQrCodeVisible] = useState(false);
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        await getCart();
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
+    fetchCart();
+
+    // Nếu có thông tin người dùng sẵn có, set chúng vào userInfo
+    if (user) {
+      setUserInfo({
+        fullname: user.fullname,
+        address: user.address,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+      });
+    }
+  }, [getCart, user]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value,
+    }));
+  };
+
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaymentMethod(e.target.value);
+    if (e.target.value === "Transfer") {
+      setQrCodeVisible(true); //Hiển thị mã qr
+    } else {
+      setQrCodeVisible(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    console.log("User Info:", userInfo);
+    await checkout();
+  };
+  //Tạo URL Qr
+  const qrCodeData = `STK:0399604776;NH:NGAN HANG MB BANK;SO TIEN:${state.totalPrice};NOI DUNG:${userInfo.fullname}`;
+
   return (
     <>
       <div className="container-fluid page-header py-5">
@@ -20,32 +87,56 @@ const CheckOutLayout = () => {
       <div className="container-fluid py-5">
         <div className="container py-5">
           <h1 className="mb-4">Chi tiết thanh toán</h1>
-          <form action="#">
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="row g-5">
               <div className="col-md-12 col-lg-6 col-xl-7">
                 <div className="form-item">
                   <label className="form-label my-3">
                     Họ và tên<sup>*</sup>
                   </label>
-                  <input type="text" className="form-control" />
+                  <input
+                    type="text"
+                    name="fullName"
+                    className="form-control"
+                    value={userInfo.fullname}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="form-item">
                   <label className="form-label my-3">
                     Địa chỉ <sup>*</sup>
                   </label>
-                  <input type="text" className="form-control" />
+                  <input
+                    type="text"
+                    name="address"
+                    className="form-control"
+                    value={userInfo.address}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="form-item">
                   <label className="form-label my-3">
                     SĐT<sup>*</sup>
                   </label>
-                  <input type="tel" className="form-control" />
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    className="form-control"
+                    value={userInfo.phoneNumber}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="form-item">
                   <label className="form-label my-3">
                     Email<sup>*</sup>
                   </label>
-                  <input type="email" className="form-control" />
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-control"
+                    value={userInfo.email}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="form-check my-3">
                   <input
@@ -74,22 +165,26 @@ const CheckOutLayout = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">
-                          <div className="d-flex align-items-center mt-2">
-                            <img
-                              src="img/vegetable-item-3.png"
-                              className="img-fluid rounded-circle"
-                              style={{ width: 90, height: 90 }}
-                              alt=""
-                            />
-                          </div>
-                        </th>
-                        <td className="py-5">Big Banana</td>
-                        <td className="py-5">$69.00</td>
-                        <td className="py-5">2</td>
-                        <td className="py-5">$138.00</td>
-                      </tr>
+                      {state.products.map((prd: CartItem) => (
+                        <tr key={prd.product._id}>
+                          <th scope="row">
+                            <div className="d-flex align-items-center mt-2">
+                              <img
+                                src={prd.product.images}
+                                className="img-fluid rounded-circle"
+                                style={{ width: 90, height: 90 }}
+                                alt=""
+                              />
+                            </div>
+                          </th>
+                          <td className="py-5">{prd.product.title}</td>
+                          <td className="py-5">{prd.product.price} Đ</td>
+                          <td className="py-5">{prd.quantity}</td>
+                          <td className="py-5">
+                            {prd.product.price * prd.quantity} Đ
+                          </td>
+                        </tr>
+                      ))}
                       <tr>
                         <th scope="row"></th>
                         <td className="py-5">
@@ -101,7 +196,9 @@ const CheckOutLayout = () => {
                         <td className="py-5" />
                         <td className="py-5">
                           <div className="py-3 border-bottom border-top">
-                            <p className="mb-0 text-dark">$135.00</p>
+                            <p className="mb-0 text-dark">
+                              {state.totalPrice} Đ
+                            </p>
                           </div>
                         </td>
                       </tr>
@@ -112,27 +209,35 @@ const CheckOutLayout = () => {
                   <div className="col-12">
                     <div className="form-check text-start my-3">
                       <input
-                        type="checkbox"
+                        type="radio"
                         className="form-check-input bg-primary border-0"
                         id="Transfer-1"
-                        name="Transfer"
+                        name="paymentMethod"
                         defaultValue="Transfer"
+                        onChange={handlePaymentChange}
                       />
                       <label className="form-check-label" htmlFor="Transfer-1">
                         Chuyển khoản
                       </label>
                     </div>
+                    {qrCodeVisible && (
+                      <div className="qr-code-container">
+                        <p>Quét mã QR để thanh toán:</p>
+                        <QRCodeSVG value={qrCodeData} size={256} />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                   <div className="col-12">
                     <div className="form-check text-start my-3">
                       <input
-                        type="checkbox"
+                        type="radio"
                         className="form-check-input bg-primary border-0"
                         id="Payments-1"
-                        name="Payments"
-                        defaultValue="Payments"
+                        name="paymentMethod"
+                        value="COD"
+                        onChange={handlePaymentChange}
                       />
                       <label className="form-check-label" htmlFor="Payments-1">
                         Thanh toán khi nhận hàng
@@ -144,6 +249,7 @@ const CheckOutLayout = () => {
                   <button
                     type="button"
                     className="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
+                    onClick={handleSubmit}
                   >
                     Place Order
                   </button>
@@ -151,143 +257,6 @@ const CheckOutLayout = () => {
               </div>
             </div>
           </form>
-        </div>
-      </div>
-      {/* Checkout Page End */}
-      {/* Footer Start */}
-      <div className="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-        <div className="container py-5">
-          <div
-            className="pb-4 mb-4"
-            style={{ borderBottom: "1px solid rgba(226, 175, 24, 0.5)" }}
-          >
-            <div className="row g-4">
-              <div className="col-lg-3">
-                <a href="#">
-                  <h1 className="text-primary mb-0">Fruitables</h1>
-                  <p className="text-secondary mb-0">Fresh products</p>
-                </a>
-              </div>
-              <div className="col-lg-6">
-                <div className="position-relative mx-auto">
-                  <input
-                    className="form-control border-0 w-100 py-3 px-4 rounded-pill"
-                    type="number"
-                    placeholder="Your Email"
-                  />
-                  <button
-                    type="submit"
-                    className="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
-                    style={{ top: 0, right: 0 }}
-                  >
-                    Subscribe Now
-                  </button>
-                </div>
-              </div>
-              <div className="col-lg-3">
-                <div className="d-flex justify-content-end pt-3">
-                  <a
-                    className="btn  btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
-                  >
-                    <i className="fab fa-twitter" />
-                  </a>
-                  <a
-                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
-                  >
-                    <i className="fab fa-facebook-f" />
-                  </a>
-                  <a
-                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
-                  >
-                    <i className="fab fa-youtube" />
-                  </a>
-                  <a
-                    className="btn btn-outline-secondary btn-md-square rounded-circle"
-                    href=""
-                  >
-                    <i className="fab fa-linkedin-in" />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row g-5">
-            <div className="col-lg-3 col-md-6">
-              <div className="footer-item">
-                <h4 className="text-light mb-3">Why People Like us!</h4>
-                <p className="mb-4">
-                  typesetting, remaining essentially unchanged. It was
-                  popularised in the 1960s with the like Aldus PageMaker
-                  including of Lorem Ipsum.
-                </p>
-                <a
-                  href=""
-                  className="btn border-secondary py-2 px-4 rounded-pill text-primary"
-                >
-                  Read More
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="d-flex flex-column text-start footer-item">
-                <h4 className="text-light mb-3">Shop Info</h4>
-                <a className="btn-link" href="">
-                  About Us
-                </a>
-                <a className="btn-link" href="">
-                  Contact Us
-                </a>
-                <a className="btn-link" href="">
-                  Privacy Policy
-                </a>
-                <a className="btn-link" href="">
-                  Terms &amp; Condition
-                </a>
-                <a className="btn-link" href="">
-                  Return Policy
-                </a>
-                <a className="btn-link" href="">
-                  FAQs &amp; Help
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="d-flex flex-column text-start footer-item">
-                <h4 className="text-light mb-3">Account</h4>
-                <a className="btn-link" href="">
-                  My Account
-                </a>
-                <a className="btn-link" href="">
-                  Shop details
-                </a>
-                <a className="btn-link" href="">
-                  Shopping Cart
-                </a>
-                <a className="btn-link" href="">
-                  Wishlist
-                </a>
-                <a className="btn-link" href="">
-                  Order History
-                </a>
-                <a className="btn-link" href="">
-                  International Orders
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="footer-item">
-                <h4 className="text-light mb-3">Contact</h4>
-                <p>Address: 1429 Netus Rd, NY 48247</p>
-                <p>Email: Example@gmail.com</p>
-                <p>Phone: +0123 4567 8910</p>
-                <p>Payment Accepted</p>
-                <img src="img/payment.png" className="img-fluid" alt="" />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>

@@ -4,4 +4,7 @@ export interface Users {
   password: string;
   confirmPass: string;
   role?: "admin" | "member";
+  fullname: string;
+  address: string;
+  phoneNumber: string;
 }

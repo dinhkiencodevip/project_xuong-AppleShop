@@ -1,16 +1,11 @@
 import { useContext, useEffect } from "react";
 import { CartContext, CartContextType } from "../../../ConText/CartContext";
 import { CartItem } from "../../../ConText/CartContext";
+import { Link } from "react-router-dom";
 
 const CartLayout = () => {
-  const {
-    state,
-    removeFromCart,
-    checkout,
-    getCart,
-    increaseQuantity,
-    decreaseQuantity,
-  } = useContext(CartContext) as CartContextType;
+  const { state, removeFromCart, getCart, increaseQuantity, decreaseQuantity } =
+    useContext(CartContext) as CartContextType;
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -75,7 +70,7 @@ const CartLayout = () => {
                         <p className="mb-0 mt-4">{prd.product.title}</p>
                       </td>
                       <td>
-                        <p className="mb-0 mt-4">${prd.product.price}</p>
+                        <p className="mb-0 mt-4">{prd.product.price} Đ</p>
                       </td>
                       <td>
                         <div
@@ -108,7 +103,7 @@ const CartLayout = () => {
                       </td>
                       <td>
                         <p className="mb-0 mt-4">
-                          ${prd.product.price * prd.quantity}
+                          {prd.product.price * prd.quantity} Đ
                         </p>
                       </td>
                       <td>
@@ -154,13 +149,13 @@ const CartLayout = () => {
                   <p className="mb-0 pe-4">${state.totalPrice}</p>{" "}
                   {/* Thêm phí vận chuyển vào tổng giá */}
                 </div>
-                <button
+                <Link
+                  to="/checkout"
                   className="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                   type="button"
-                  onClick={checkout}
                 >
                   Proceed Checkout
-                </button>
+                </Link>
               </div>
             </div>
           </div>

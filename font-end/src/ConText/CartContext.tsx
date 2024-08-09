@@ -1,8 +1,7 @@
 import { createContext, useReducer, useCallback } from "react";
 import { Products } from "../interface/product";
 import { instace } from "../api";
-import { string } from "zod";
-
+import { useNavigate } from "react-router-dom";
 // Định nghĩa loại CartContext
 export type CartContextType = {
   state: {
@@ -122,7 +121,7 @@ const CartContext = createContext<CartContextType>({} as CartContextType);
 // Định nghĩa component CartProvider
 const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-
+  const nav = useNavigate();
   const addToCart = useCallback(async (product: Products, quantity: number) => {
     try {
       const res = await instace.post("/cart", {
@@ -162,6 +161,8 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await instace.post("/cart/checkout");
       dispatch({ type: "CHECKOUT", payload: {} });
+      alert("Bạn đã đặt hàng thành công! Quay lại trang chủ");
+      nav("/");
     } catch (error) {
       console.error("Thanh toán thất bại:", error);
     }

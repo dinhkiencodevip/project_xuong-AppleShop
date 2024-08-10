@@ -12,6 +12,7 @@ import LoginHome from "./pages/home/LoginHome";
 import NotFound from "./pages/admin/layouts/404NotFound";
 import CartHome from "./pages/home/CartHome";
 import CheckoutHome from "./pages/home/CheckoutHome";
+import OrderHome from "./pages/home/OrderHome";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/login" element={<LoginHome />} />
         <Route path="/cart" element={<CartHome />}></Route>
         <Route path="/checkout" element={<CheckoutHome />}></Route>
+        <Route path="/order" element={<OrderHome />}></Route>
         {/* Not Found */}
         <Route path="/NotFound" element={<NotFound />}></Route>
       </Routes>

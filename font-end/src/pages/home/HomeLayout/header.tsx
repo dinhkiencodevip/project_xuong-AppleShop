@@ -38,9 +38,9 @@ const Header = () => {
         </div>
         <div className="container px-0">
           <nav className="navbar navbar-light bg-white navbar-expand-xl">
-            <a href="index.html" className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               <h1 className="text-primary display-6">Apple Shop</h1>
-            </a>
+            </Link>
             <button
               className="navbar-toggler py-2 px-3"
               type="button"
@@ -54,9 +54,9 @@ const Header = () => {
               id="navbarCollapse"
             >
               <div className="navbar-nav mx-auto">
-                <a href="index.html" className="nav-item nav-link active">
+                <Link to="/" className="nav-item nav-link active">
                   Home
-                </a>
+                </Link>
                 <a href="shop.html" className="nav-item nav-link">
                   Shop
                 </a>
@@ -118,6 +118,9 @@ const Header = () => {
                       <li>
                         <Link to="" className="dropdown-item">
                           User : {user?.email}
+                        </Link>
+                        <Link to="" className="dropdown-item">
+                          Order
                         </Link>
                         {user.role == "admin" && (
                           <Link to="/admin" className="dropdown-item">

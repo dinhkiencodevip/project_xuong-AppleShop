@@ -38,7 +38,7 @@ type CartAction =
   | { type: "ADD_TO_CART"; payload: { product: Products; quantity: number } }
   | { type: "REMOVE_FROM_CART"; payload: { productId: string } }
   | { type: "GET_CART"; payload: { products: CartItem[]; totalPrice: number } }
-  | { type: "CHECKOUT"; payload: {} } // Không cần payload cho CHECKOUT
+  | { type: "CHECKOUT" } // Không cần payload cho CHECKOUT
   | { type: "INCREASE_QUANTITY"; payload: { productId: string } }
   | { type: "DECREASE_QUANTITY"; payload: { productId: string } };
 

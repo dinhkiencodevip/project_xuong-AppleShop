@@ -76,7 +76,7 @@ export const addToCart = async (req, res, next) => {
 export const removeFromCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.params; // Sửa lỗi ở đây
+    const { productId } = req.params;
 
     // Tìm giỏ hàng của người dùng
     let cart = await Cart.findOne({ userId }).populate("products.product");
@@ -121,20 +121,29 @@ export const removeFromCart = async (req, res, next) => {
 export const checkOut = async (req, res, next) => {
   try {
     const userId = req.user._id;
+    const { paymentMethod } = req.body;
+
+    // Kiểm tra tính hợp lệ của phương thức thanh toán
+    if (!paymentMethod || !["Cash", "Transfer"].includes(paymentMethod)) {
+      return res.status(400).json({ message: "Invalid payment method" });
+    }
+
+    // Tìm giỏ hàng của người dùng
     const cart = await Cart.findOne({ userId }).populate("products.product");
-    if (!cart)
-      return res.status(400).json({
-        message: "Giỏ hàng trống",
-      });
+    if (!cart) {
+      return res.status(400).json({ message: "Giỏ hàng trống" });
+    }
+
     // Tạo đơn hàng mới
     const order = new Oders({
       user: userId,
       products: cart.products,
       totalPrice: cart.totalPrice,
+      paymentMethod,
     });
     await order.save();
 
-    //Xoa gio hang sau khi thanh toan
+    // Xóa giỏ hàng sau khi thanh toán
     cart.products = [];
     cart.totalPrice = 0;
     await cart.save();

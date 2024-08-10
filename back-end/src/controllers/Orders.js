@@ -57,6 +57,6 @@ export const getOrders = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Lỗi khi lấy đơn hàng", error: error.message });
+      .json({ message: "Lỗi khi lấy đơn hàngg", error: error.message });
   }
 };

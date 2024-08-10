@@ -11,7 +11,7 @@ export type CartContextType = {
   dispatch: React.Dispatch<CartAction>;
   addToCart: (product: Products, quantity: number) => void;
   getCart: () => void;
-  checkout: () => void;
+  checkout: (paymentMethod: string, userInfo: any) => void;
   removeFromCart: (productId: string) => void;
   increaseQuantity: (productId: string) => void;
   decreaseQuantity: (productId: string) => void;
@@ -157,10 +157,10 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const checkout = useCallback(async () => {
+  const checkout = useCallback(async (paymentMethod: string, userInfo: any) => {
     try {
-      await instace.post("/cart/checkout");
-      dispatch({ type: "CHECKOUT", payload: {} });
+      await instace.post("/cart/checkout", { paymentMethod, ...userInfo }); // Gửi paymentMethod và userInfo
+      dispatch({ type: "CHECKOUT" });
       alert("Bạn đã đặt hàng thành công! Quay lại trang chủ");
       nav("/");
     } catch (error) {

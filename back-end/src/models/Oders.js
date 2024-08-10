@@ -20,6 +20,11 @@ const orderSchema = new mongoose.Schema(
       enum: ["Chờ xác nhận", "Đang vận chuyển", "Hoàn thành", "Hủy"],
       default: "Chờ xác nhận",
     },
+    paymentMethod: {
+      type: String,
+      enum: ["Cash", "Transfer"],
+      default: "Cash",
+    },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true, versionKey: false }

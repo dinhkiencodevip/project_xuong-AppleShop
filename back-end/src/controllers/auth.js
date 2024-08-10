@@ -22,6 +22,9 @@ export const register = async (req, res, next) => {
     const user = await User.create({
       email,
       password: hassPass,
+      // address,
+      // phoneNumber,
+      // fullname,
     });
     return res.status(201).json({
       success: true,

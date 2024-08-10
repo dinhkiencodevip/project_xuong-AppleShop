@@ -13,20 +13,23 @@ export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within a AuthProvider ");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Users | null>(null);
   const nav = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      const user = localStorage.getItem("user") || "";
+    const userString = localStorage.getItem("user");
+    if (token && userString) {
+      const user = JSON.parse(userString); // Chuyển đổi từ chuỗi JSON về đối tượng
       setUser(user);
     }
   }, []);
@@ -44,6 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     nav("/login");
   };
+
   return (
     <AuthContext.Provider
       value={{ user, login, logout, isAdmin: user?.role === "admin" }}

@@ -121,26 +121,35 @@ export const removeFromCart = async (req, res, next) => {
 export const checkOut = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { paymentMethod } = req.body;
+    const { paymentMethod, userInfo } = req.body; // Thêm userInfo vào body yêu cầu
 
-    // Kiểm tra tính hợp lệ của phương thức thanh toán
     if (!paymentMethod || !["Cash", "Transfer"].includes(paymentMethod)) {
       return res.status(400).json({ message: "Invalid payment method" });
     }
 
-    // Tìm giỏ hàng của người dùng
+    if (
+      !userInfo ||
+      !userInfo.fullname ||
+      !userInfo.address ||
+      !userInfo.phoneNumber ||
+      !userInfo.email
+    ) {
+      return res.status(400).json({ message: "Missing user information" });
+    }
+
     const cart = await Cart.findOne({ userId }).populate("products.product");
     if (!cart) {
       return res.status(400).json({ message: "Giỏ hàng trống" });
     }
 
-    // Tạo đơn hàng mới
     const order = new Oders({
-      user: userId,
+      userId,
+      userInfo,
       products: cart.products,
       totalPrice: cart.totalPrice,
       paymentMethod,
     });
+
     await order.save();
 
     // Xóa giỏ hàng sau khi thanh toán
@@ -148,7 +157,7 @@ export const checkOut = async (req, res, next) => {
     cart.totalPrice = 0;
     await cart.save();
 
-    return res.status(200).json({ message: "Thanh toán thành công!" });
+    return res.status(200).json({ message: "Thanh toán thành công!", order });
   } catch (error) {
     next(error);
   }

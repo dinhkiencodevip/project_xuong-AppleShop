@@ -119,7 +119,7 @@ const Header = () => {
                         <Link to="" className="dropdown-item">
                           User : {user?.email}
                         </Link>
-                        <Link to="" className="dropdown-item">
+                        <Link to="/order" className="dropdown-item">
                           Order
                         </Link>
                         {user.role == "admin" && (

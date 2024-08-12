@@ -1,7 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 const orderItemSchema = new mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true,
+  },
   quantity: { type: Number, required: true },
 });
 
@@ -11,6 +15,12 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    userInfo: {
+      fullname: String,
+      email: String,
+      phoneNumber: String,
+      address: String,
     },
     products: [orderItemSchema],
     totalPrice: { type: Number, required: true },

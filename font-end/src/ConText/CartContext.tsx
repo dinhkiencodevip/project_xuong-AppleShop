@@ -157,16 +157,47 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const checkout = useCallback(async (paymentMethod: string, userInfo: any) => {
-    try {
-      await instace.post("/cart/checkout", { paymentMethod, ...userInfo }); // Gửi paymentMethod và userInfo
-      dispatch({ type: "CHECKOUT" });
-      alert("Bạn đã đặt hàng thành công! Quay lại trang chủ");
-      nav("/");
-    } catch (error) {
-      console.error("Thanh toán thất bại:", error);
-    }
-  }, []);
+  const checkout = useCallback(
+    async (
+      paymentMethod: string,
+      userInfo: {
+        fullname: string;
+        address: string;
+        phoneNumber: string;
+        email: string;
+      }
+    ) => {
+      try {
+        // Kiểm tra thông tin người dùng và phương thức thanh toán
+        if (
+          !paymentMethod ||
+          !userInfo.fullname ||
+          !userInfo.address ||
+          !userInfo.phoneNumber ||
+          !userInfo.email
+        ) {
+          alert(
+            "Vui lòng điền đầy đủ thông tin và chọn phương thức thanh toán."
+          );
+          return;
+        }
+
+        // Gửi yêu cầu thanh toán đến backend
+        await instace.post("/cart/checkout", { paymentMethod, ...userInfo });
+
+        // Cập nhật trạng thái giỏ hàng sau khi thanh toán
+        dispatch({ type: "CHECKOUT" });
+
+        // Thông báo thành công và điều hướng về trang chủ
+        alert("Bạn đã đặt hàng thành công! Quay lại trang chủ");
+        nav("/");
+      } catch (error) {
+        console.error("Thanh toán thất bại:", error);
+        alert("Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.");
+      }
+    },
+    [dispatch, nav]
+  );
 
   const removeFromCart = useCallback(
     async (productId: string) => {

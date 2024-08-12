@@ -60,7 +60,7 @@ const CartLayout = () => {
                         <div className="d-flex align-items-center">
                           <img
                             src={prd.product.images}
-                            className="img-fluid me-5 rounded-circle"
+                            className="img"
                             style={{ width: 80, height: 80 }}
                             alt={prd.product.title}
                           />

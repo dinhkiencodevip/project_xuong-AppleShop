@@ -1,12 +1,18 @@
 import { useContext, useEffect } from "react";
 import { OrderContext, OrderContextType } from "../../../ConText/OrderContext";
+import { Link } from "react-router-dom";
 
 const OrderLayout = () => {
-  const { state, getOrders } = useContext(OrderContext) as OrderContextType;
-  const { orders } = state;
+  const { state, getOrders, deleteOrder } = useContext(
+    OrderContext
+  ) as OrderContextType;
   useEffect(() => {
     getOrders();
   }, [getOrders]);
+
+  const handleDeleteOrder = (orderId: string) => {
+    deleteOrder(orderId);
+  };
   return (
     <>
       <div className="container-fluid page-header py-5">
@@ -27,24 +33,25 @@ const OrderLayout = () => {
             <table className="table">
               <thead>
                 <tr>
-                  <th scope="col">Order ID</th>
+                  <th scope="col">STT</th>
                   <th scope="col">User</th>
                   <th scope="col">Products</th>
                   <th scope="col">Total Price</th>
                   <th scope="col">Status</th>
                   <th scope="col">Created At</th>
                   <th scope="col">Action</th>
+                  <th scope="col">Order Detail</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
+                {state.orders.map((order, index) => (
                   <tr key={order._id}>
-                    <td>{order._id}</td>
+                    <td>{index + 1}</td>
                     <td>{order.userId}</td>
                     <td>
-                      {order.product.map((item) => (
+                      {order.products?.map((item) => (
                         <div
-                          key={item.product._id}
+                          key={item.product.images}
                           className="d-flex align-items-center mb-2"
                         >
                           <img
@@ -61,9 +68,15 @@ const OrderLayout = () => {
                     <td>{order.status}</td>
                     <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <button className="btn btn-md bg-light border">
+                      <button
+                        className="btn btn-md bg-light border"
+                        onClick={() => handleDeleteOrder(order._id)}
+                      >
                         <i className="fa fa-times text-danger" />
                       </button>
+                    </td>
+                    <td>
+                      <Link to="/order-detail">Chi tiết đơn hàng</Link>
                     </td>
                   </tr>
                 ))}

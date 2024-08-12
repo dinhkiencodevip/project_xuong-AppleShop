@@ -20,7 +20,6 @@ const CheckOutLayout = () => {
     email: "",
   });
 
-  // Tích hợp QR code
   const [paymentMethod, setPaymentMethod] = useState("");
   const [qrCodeVisible, setQrCodeVisible] = useState(false);
 
@@ -34,7 +33,6 @@ const CheckOutLayout = () => {
     };
     fetchCart();
 
-    // Nếu có thông tin người dùng sẵn có, set chúng vào userInfo
     if (user) {
       setUserInfo({
         fullname: user.fullname || "",
@@ -56,14 +54,13 @@ const CheckOutLayout = () => {
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(e.target.value);
     if (e.target.value === "Transfer") {
-      setQrCodeVisible(true); // Hiển thị mã QR
+      setQrCodeVisible(true);
     } else {
       setQrCodeVisible(false);
     }
   };
 
   const handleSubmit = async () => {
-    // Kiểm tra xem tất cả các trường thông tin đã được nhập đầy đủ không
     if (
       !userInfo.fullname ||
       !userInfo.address ||
@@ -76,13 +73,15 @@ const CheckOutLayout = () => {
     }
 
     try {
-      await checkout(paymentMethod, userInfo); // Gửi paymentMethod và userInfo
+      await checkout(paymentMethod, userInfo);
+      alert("Bạn đã đặt hàng thành công! Quay lại trang chủ");
+      window.location.href = "/"; // Hoặc bạn có thể sử dụng `nav("/")` nếu có hook điều hướng.
     } catch (error) {
       console.error("Error during checkout:", error);
+      alert("Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.");
     }
   };
 
-  // Tạo URL QR
   const qrCodeData = `STK:0399604776;NH:NGAN HANG MB BANK;SO TIEN:${state.totalPrice};NOI DUNG:${userInfo.fullname}`;
 
   return (
@@ -99,8 +98,6 @@ const CheckOutLayout = () => {
           <li className="breadcrumb-item active text-white">Checkout</li>
         </ol>
       </div>
-      {/* Single Page Header End */}
-      {/* Checkout Page Start */}
       <div className="container-fluid py-5">
         <div className="container py-5">
           <h1 className="mb-4">Chi tiết thanh toán</h1>
@@ -113,7 +110,7 @@ const CheckOutLayout = () => {
                   </label>
                   <input
                     type="text"
-                    name="fullname" // Cập nhật tên trường
+                    name="fullname"
                     className="form-control"
                     value={userInfo.fullname}
                     onChange={handleChange}
@@ -125,7 +122,7 @@ const CheckOutLayout = () => {
                   </label>
                   <input
                     type="text"
-                    name="address" // Cập nhật tên trường
+                    name="address"
                     className="form-control"
                     value={userInfo.address}
                     onChange={handleChange}
@@ -137,7 +134,7 @@ const CheckOutLayout = () => {
                   </label>
                   <input
                     type="tel"
-                    name="phoneNumber" // Cập nhật tên trường
+                    name="phoneNumber"
                     className="form-control"
                     value={userInfo.phoneNumber}
                     onChange={handleChange}
@@ -149,7 +146,7 @@ const CheckOutLayout = () => {
                   </label>
                   <input
                     type="email"
-                    name="email" // Cập nhật tên trường
+                    name="email"
                     className="form-control"
                     value={userInfo.email}
                     onChange={handleChange}
@@ -230,7 +227,7 @@ const CheckOutLayout = () => {
                         className="form-check-input bg-primary border-0"
                         id="Transfer-1"
                         name="paymentMethod"
-                        value="Transfer" // Cập nhật giá trị
+                        value="Transfer"
                         onChange={handlePaymentChange}
                       />
                       <label className="form-check-label" htmlFor="Transfer-1">
@@ -253,7 +250,7 @@ const CheckOutLayout = () => {
                         className="form-check-input bg-primary border-0"
                         id="Payments-1"
                         name="paymentMethod"
-                        value="Cash" // Cập nhật giá trị
+                        value="Cash"
                         onChange={handlePaymentChange}
                       />
                       <label className="form-check-label" htmlFor="Payments-1">

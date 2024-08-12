@@ -8,12 +8,13 @@ export type OrderContextType = {
   dispatch: React.Dispatch<OrderAction>;
   createOrder: (
     userId: string,
-    product: CartItem[],
+    products: CartItem[],
     totalPrice: number,
     voucher?: string
   ) => void;
   getOrderById: (orderId: string) => void;
   getOrders: () => void;
+  deleteOrder: (orderId: string) => void;
 };
 
 // Định nghĩa loại order và state
@@ -21,7 +22,7 @@ export type OrderContextType = {
 export type OrderItem = {
   _id: string;
   userId: string;
-  product: CartItem[];
+  products: CartItem[];
   totalPrice: number;
   voucher?: string;
   status: string;
@@ -39,7 +40,7 @@ type OrderAction =
   | { type: "CREATE_ORDER"; payload: OrderItem }
   | { type: "GET_ORDERS"; payload: OrderItem[] }
   | { type: "GET_ORDER_BY_ID"; payload: OrderItem }
-  | { type: "CLEAR_ORDER" };
+  | { type: "DELETE_ORDER"; payload: string };
 
 //Định nghĩa hàm reducer
 
@@ -60,10 +61,10 @@ const orderReducer = (state: OrderState, action: OrderAction): OrderState => {
         ...state,
         currentOrder: action.payload,
       };
-    case "CLEAR_ORDER":
+    case "DELETE_ORDER":
       return {
         ...state,
-        currentOrder: null,
+        orders: state.orders.filter((order) => order._id !== action.payload),
       };
     default:
       return state;
@@ -134,6 +135,18 @@ const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const deleteOrder = useCallback(async (orderId: string) => {
+    try {
+      await instace.delete(`/orders/${orderId}`);
+      dispatch({
+        type: "DELETE_ORDER",
+        payload: orderId,
+      });
+      alert("Đơn hàng đã được xóa thành công!");
+    } catch (error) {
+      console.error("Lỗi khi xóa đơn hàng", error);
+    }
+  }, []);
   return (
     <OrderContext.Provider
       value={{
@@ -142,6 +155,7 @@ const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         createOrder,
         getOrderById,
         getOrders,
+        deleteOrder,
       }}
     >
       {children}

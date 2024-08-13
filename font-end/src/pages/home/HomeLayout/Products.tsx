@@ -1,18 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Products } from "../../../interface/product";
+import React, { useContext, useEffect, useState } from "react";
+import { Products } from "../../../interface/product"; // Đổi tên kiểu dữ liệu từ Products sang Product
 import { instace } from "../../../api";
 import { Link } from "react-router-dom";
+import { CartContext, CartContextType } from "../../../ConText/CartContext";
 
-const Products = () => {
+const ProductsList = () => {
   const [products, setProducts] = useState<Products[]>([]);
-  //   const nav = useNavigate();
+  const { addToCart } = useContext(CartContext) as CartContextType;
+
+  // Lấy danh sách sản phẩm từ API
   const fetchProducts = async () => {
-    const { data } = await instace.get(`/products`);
-    setProducts(data.data);
+    try {
+      const { data } = await instace.get(`/products`);
+      setProducts(data.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+    }
   };
+
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  // Thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = (product: Products) => {
+    addToCart(product, 1);
+    alert("Thêm sản phẩm vào giỏ hàng thành công!");
+  };
+
   return (
     <div>
       <div className="container-fluid fruite py-5">
@@ -24,14 +39,19 @@ const Products = () => {
                   <div className="col-lg-12">
                     <div className="row g-4">
                       {products.map((prd) => (
-                        <div className="col-md-6 col-lg-4 col-xl-3">
+                        <div
+                          key={prd._id}
+                          className="col-md-6 col-lg-4 col-xl-3"
+                        >
                           <div className="rounded position-relative fruite-item">
-                            <div className="fruite-imgg">
-                              <img
-                                src={prd.images}
-                                className="img-fluid w-70 h-100 rounded-top"
-                                alt=""
-                              />
+                            <div className="fruite-img">
+                              <Link to={`/product/detail/${prd._id}`}>
+                                <img
+                                  src={prd.images}
+                                  className="img-fluid w-100 rounded-top"
+                                  alt={prd.title}
+                                />
+                              </Link>
                             </div>
                             <div className="p-4 border border-secondary border-top-0 rounded-bottom">
                               <Link
@@ -42,16 +62,16 @@ const Products = () => {
                               </Link>
                               <p>{prd.description}</p>
                               <div className="d-flex justify-content-between flex-lg-wrap">
-                                <p className="text-dark fs-5 fw-bold mb-0">
+                                <p className="text-dark fs-5 fw-bold mb-0 pr-100">
                                   {prd.price} Đ
                                 </p>
-                                <a
-                                  href="#"
+                                <button
+                                  onClick={() => handleAddToCart(prd)}
                                   className="btn border border-secondary rounded-pill px-3 text-primary"
                                 >
                                   <i className="fa fa-shopping-bag me-2 text-primary" />{" "}
                                   Add to cart
-                                </a>
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -69,4 +89,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductsList;

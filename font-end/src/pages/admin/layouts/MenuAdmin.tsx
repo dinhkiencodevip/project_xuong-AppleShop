@@ -39,10 +39,10 @@ const MenuAdmin = () => {
               <i className="fa fa-th me-2" />
               Category
             </Link>
-            <a href="form.html" className="nav-item nav-link">
-              <i className="fa fa-keyboard me-2" />
-              Forms
-            </a>
+            <Link to="/admin/orders" className="nav-item nav-link">
+              <i className="fa fa-th me-2" />
+              Order
+            </Link>
             <a href="table.html" className="nav-item nav-link">
               <i className="fa fa-table me-2" />
               Tables

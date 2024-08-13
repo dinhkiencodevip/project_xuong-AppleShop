@@ -56,8 +56,8 @@ const OrderLayout = () => {
                         >
                           <img
                             src={item.product.images}
-                            className="img-fluid me-3 rounded-circle"
-                            style={{ width: 50, height: 50 }}
+                            className="img-fluid me-3 rounded"
+                            style={{ width: 70, height: 70 }}
                             alt={item.product.title}
                           />
                           <span>{item.product.title}</span>
@@ -76,7 +76,7 @@ const OrderLayout = () => {
                       </button>
                     </td>
                     <td>
-                      <Link to="/order-detail">Chi tiết đơn hàng</Link>
+                      <Link to={`/orders/${order._id}`}>Chi tiết đơn hàng</Link>
                     </td>
                   </tr>
                 ))}

@@ -12,8 +12,7 @@ const Footer = () => {
             <div className="row g-4">
               <div className="col-lg-3">
                 <a href="#">
-                  <h1 className="text-primary mb-0">Fruitables</h1>
-                  <p className="text-secondary mb-0">Fresh products</p>
+                  <h1 className="text-primary mb-0">Apple Shop</h1>
                 </a>
               </div>
               <div className="col-lg-6">

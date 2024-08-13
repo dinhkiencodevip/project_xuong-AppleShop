@@ -2,6 +2,7 @@ import { createContext, useCallback, useReducer } from "react";
 import { CartItem } from "./CartContext";
 import { useNavigate } from "react-router-dom";
 import { instace } from "../api";
+import { string } from "zod";
 
 export type OrderContextType = {
   state: OrderState;
@@ -15,6 +16,7 @@ export type OrderContextType = {
   getOrderById: (orderId: string) => void;
   getOrders: () => void;
   deleteOrder: (orderId: string) => void;
+  updateOrderStatus: (orderId: string, status: string) => void;
 };
 
 // Định nghĩa loại order và state
@@ -27,6 +29,7 @@ export type OrderItem = {
   voucher?: string;
   status: string;
   createdAt: string;
+  paymentMethod: string;
 };
 
 type OrderState = {
@@ -40,7 +43,11 @@ type OrderAction =
   | { type: "CREATE_ORDER"; payload: OrderItem }
   | { type: "GET_ORDERS"; payload: OrderItem[] }
   | { type: "GET_ORDER_BY_ID"; payload: OrderItem }
-  | { type: "DELETE_ORDER"; payload: string };
+  | { type: "DELETE_ORDER"; payload: string }
+  | {
+      type: "UPDATE_ORDER_STATUS";
+      payload: { orderId: string; status: string };
+    };
 
 //Định nghĩa hàm reducer
 
@@ -65,6 +72,19 @@ const orderReducer = (state: OrderState, action: OrderAction): OrderState => {
       return {
         ...state,
         orders: state.orders.filter((order) => order._id !== action.payload),
+      };
+    case "UPDATE_ORDER_STATUS":
+      return {
+        orders: state.orders.map((order) =>
+          order._id === action.payload.orderId
+            ? { ...order, status: action.payload.status }
+            : order
+        ),
+        currentOrder:
+          state.currentOrder &&
+          state.currentOrder._id === action.payload.orderId
+            ? { ...state.currentOrder, status: action.payload.status }
+            : state.currentOrder,
       };
     default:
       return state;
@@ -114,6 +134,7 @@ const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const getOrderById = useCallback(async (orderId: string) => {
     try {
       const res = await instace.get(`/orders/${orderId}`);
+      console.log("API Response:", res.data);
       dispatch({
         type: "GET_ORDER_BY_ID",
         payload: res.data.order,
@@ -147,6 +168,22 @@ const OrderProvider = ({ children }: { children: React.ReactNode }) => {
       console.error("Lỗi khi xóa đơn hàng", error);
     }
   }, []);
+
+  const updateOrderStatus = useCallback(
+    async (orderId: string, status: string) => {
+      try {
+        await instace.put(`/orders/${orderId}/status`, { status });
+        dispatch({
+          type: "UPDATE_ORDER_STATUS",
+          payload: { orderId, status },
+        });
+        alert("Trạng thái đơn hàng đã được cập nhật thành công!");
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái đơn hàng: ", error);
+      }
+    },
+    []
+  );
   return (
     <OrderContext.Provider
       value={{
@@ -156,6 +193,7 @@ const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         getOrderById,
         getOrders,
         deleteOrder,
+        updateOrderStatus,
       }}
     >
       {children}

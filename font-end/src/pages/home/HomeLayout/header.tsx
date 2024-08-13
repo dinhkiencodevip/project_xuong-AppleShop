@@ -19,7 +19,7 @@ const Header = () => {
               <small className="me-3">
                 <i className="fas fa-envelope me-2 text-secondary" />
                 <a href="#" className="text-white">
-                  nhom10@fpt.edu.vn
+                  15012004nguyendinhkien@gmail.com
                 </a>
               </small>
             </div>

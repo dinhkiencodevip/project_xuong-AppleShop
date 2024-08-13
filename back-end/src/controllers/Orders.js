@@ -86,3 +86,43 @@ export const deleteOrder = async (req, res) => {
       .json({ message: "Lỗi khi xóa đơn hàng", error: error.message });
   }
 };
+
+//Cập nhật trạng thái đơn hàng theo ID
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    //Kiểm tra trạng thái
+    const validStatuses = [
+      "Chờ xác nhận",
+      "Đang vận chuyển",
+      "Hoàn thành",
+      "Hủy",
+    ];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Trạng thái không hợp lệ" });
+    }
+
+    //Tìm và cập nhật trạng thái đơn hàng
+    const updatedOrder = await Oders.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    ).populate("products.product", "title price");
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng nào" });
+    }
+
+    res.status(200).json({
+      message: "Trạng thái đơn hàng đã được cập nhật",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi cập nhật trạng thái đơn hàng",
+      error: error.message,
+    });
+  }
+};
